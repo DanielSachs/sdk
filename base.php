@@ -6,6 +6,7 @@ namespace plainview;
 	@brief			Collection of useful functions.
 	@par			Changelog
 	
+	- 20130501		array_rekey: force conversion of arrays to arrays (from objects).
 	- 20130430		Added 3rdparty/phpmailer.
 	- 20130426		implode_html has switch the parameter order. $array is now first.
 	
@@ -98,11 +99,14 @@ class base
 		@return		array		Rearranged array.
 		@since		20130416
 	**/
-	public static function array_rekey($array, $key)
+	public static function array_rekey( $array, $key )
 	{
 		$r = array();
 		foreach( $array as $value )
+		{
+			$value = (array) $value;
 			$r[ $value[ $key ] ] = $value;
+		}
 		return $r;
 	}
 	
