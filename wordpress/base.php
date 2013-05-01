@@ -4,10 +4,11 @@
 	@details	Provides a framework with which to build Wordpress modules.
 	@author		Edward Plainview	edward@plainview.se
 	@license	GPL v3
-	@version	20130430
+	@version	20130501
 	
 	@par	Changelog
 
+	- 2013-05-01	14:17	New: SDK version requirement tells the user which plugin is the SDK source.
 	- 2013-04-30	08:54	New: ABSPATH check on construct().
 	- 2013-04-25	08:53	New: string_to_emails() convert a string of e-mails to an array. \n
 					12:19	New: instance() to retrieve the current instance of the object. \
@@ -211,7 +212,7 @@ class base
 		);
 
 		if ( $this->sdk_version_required > $this->sdk_version )
-			wp_die( sprintf( 'This plugin requires Plainview SDK version %s, but only %s is available.', $this->sdk_version_required, $this->sdk_version ) );
+			wp_die( sprintf( 'This plugin requires Plainview SDK version %s, but only %s from the plugin %s is available.', $this->sdk_version_required, $this->sdk_version, get_class( $this ) ) );
 		
 		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal') );
 		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal') );
