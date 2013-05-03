@@ -17,7 +17,7 @@ Include the sdk.php file.
 	
 The SDK's function can now be access statically:
 
-	if ( \plainview\base\is_email( 'test@test.com' ) )
+	if ( \plainview\base::is_email( 'test@test.com' ) )
 		echo 'Valid e-mail address!';
 
 Or by dynamically instancing the base:
