@@ -20,7 +20,8 @@
 	
 	@par	Changelog
 
-	- 2013-05-05	09:27	New: add_action, add_filter, add_shortcode.
+	- 2013-05-05	09:27	New: add_action, add_filter, add_shortcode. \n
+					15:48	New: CLI handling. cli_pot(), do_cli(), pot_files(), pot_keywords().
 	- 2013-05-04	15:53	Version moved into \\plainview\\base.
 	- 2013-05-03	15:38	Fix: display_form_table now calls cell->attribute() not attr() (which doesn't exist).
 	- 2013-05-01	14:17	New: SDK version requirement tells the user which plugin is the SDK source. \n
@@ -121,7 +122,7 @@ class base
 		@var		$local_options
 	**/ 
 	protected $local_options = array();
-
+	
 	/**
 		@brief		Contains the paths to the plugin and other places of interest.
 		
@@ -200,8 +201,22 @@ class base
 	**/
 	public function __construct( $filename = null )
 	{
+		
 		if ( ! defined( 'ABSPATH' ) )
-			wp_die( 'ABSPATH is not defined!' );
+		{
+			// Was this run from the command line?
+			if ( isset( $_SERVER[ 'argc'] ) )
+			{
+				$this->paths = array(
+					'__FILE__' => $filename,
+					'name' => get_class($this),
+					'filename' => basename($filename),
+				);
+				$this->do_cli();
+			}
+			else
+				wp_die( 'ABSPATH is not defined!' );
+		}
 		
 		parent::__construct();
 		
@@ -1129,6 +1144,47 @@ class base
 	}
 	
 	/**
+		@brief		Return an xgettext command line that will generate all strings necessary for translation.
+		@details	Will collect keywords from the SDK and the subclass.
+		@return		string		xgettext command line suggestion.
+		@see		pot_files()
+		@see		pot_keyswords()
+		@since		20130505
+	**/
+	public function cli_pot()
+	{
+		$basedir = dirname( $this->paths[ '__FILE__' ] ) . '/';
+		$files = array_merge( array(
+			basename( $this->paths[ '__FILE__' ] ),									// subclass.php
+			str_replace( $basedir, '', dirname( dirname( __FILE__ ) ) . '/*php' ),	// plainview/*php
+			str_replace( $basedir, '', dirname( __FILE__ ) . '/*php' ),				// plainview_sdk/wordpress/*.php
+		), $this->pot_files() );
+		
+		$filename = preg_replace( '/\.php/', '.pot', $this->paths[ '__FILE__' ] );
+		
+		$keywords = array_merge( array(
+			'_',
+			'error_',
+			'message_',
+			'heading_',		// tabs
+			'name_',		// tabs
+			'p_',
+			'text_',		// table
+		), $this->pot_keywords() );
+		
+		$pot = dirname( $filename ) . '/lang/' . basename( $filename );
+		
+		$command = sprintf( 'xgettext -s -c --no-wrap -d %s -p lang -o "%s" --omit-header%s %s',
+			get_class( $this ),
+			$pot,
+			$this->implode_html( $keywords, ' -k', '' ),
+			implode( ' ', $files )
+		);
+		echo $command;
+		echo "\n";
+	}
+	
+	/**
 		@brief		Displays an array of inputs using Wordpress table formatting.
 		@param		array		$inputs		Array of \plainview\wordpress\form inputs.
 		@param		array		$options	Array of options.
@@ -1187,6 +1243,28 @@ class base
 		$r .= $table;
 		
 		return $r;
+	}
+	
+	/**
+		@brief		Handles command line arguments.
+		@details	Using an array of long options, will call the respective method to handle the option.
+		
+		For example: `php Inherited_Class.php --pot` will call do_pot().
+		@see		long_options
+		@since		20130505
+	**/ 
+	public function do_cli()
+	{
+		$long_options = array_merge( array( 'pot' ), $this->long_options() );
+		$options = (object) getopt( '', $long_options );
+		
+		foreach( $options as $option => $value )
+		{
+			$f = 'cli_' . $option;
+			$this->$f( $options );
+		}
+		
+		die();
 	}
 	
 	/**
@@ -1378,6 +1456,17 @@ class base
 	}
 	
 	/**
+		@brief		An array of command line options that this subclass can handle via do_LONGOPTION().
+		@return		array		Array of long options that this subclass handles.
+		@see		do_cli()
+		@since		20130505
+	**/
+	public function long_options()
+	{
+		return array();
+	}
+	
+	/**
 		@brief		Create a PHPmailer object.
 		@return		\\plainview\\mail\\mail		Mail object.
 	**/
@@ -1420,6 +1509,26 @@ class base
 	{
 		$args = func_get_args();
 		return wpautop( call_user_func_array( array( &$this, '_'), $args ) );
+	}
+	
+	/**
+		@brief		Return a list of files that are to be included when creating the .pot file.
+		@return		array		List of files (including wildcards) that must be including when preparing the .pot file.
+		@since		20130505
+	**/
+	public function pot_files()
+	{
+		return array();
+	}
+	
+	/**
+		@brief		Return a list of translation keywords used when creating the .pot file.
+		@return		array		Array of translation keywords to use when creating the .pot file.
+		@since		20130505
+	**/
+	public function pot_keywords()
+	{
+		return array();
 	}
 	
 	/**

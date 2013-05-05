@@ -1,7 +1,23 @@
-plainview_sdk
+Plainview SDK
 =============
 
 A toolkit of commonly used classes and functions, including Wordpress and Drupal SDKs.
+
+The SDK contains:
+
+* Base set of useful functions
+* Wordpress SDK - fully fledged SDK based on the base classes
+* Drupal SDK - currently only a Drupalized db_aware_object class
+
+Base
+----
+
+* base.php is a base class of [mostly] static functions
+* db_aware_object is a trait that your objects can use to update themselves in the database
+* form.php manipulates XHTML forms
+* mail.php is a wrapper for PHPMailer
+* sdk.php is the file your application can include to include all of the SDK at once
+* table.php manipulates XHTML tables
 
 Requirements
 ------------
@@ -15,7 +31,7 @@ Include the sdk.php file.
 
 	require_once( 'plainview_sdk/sdk.php' );
 	
-The SDK's function can now be access statically:
+The SDK's function can now be accessed statically:
 
 	if ( \plainview\base::is_email( 'test@test.com' ) )
 		echo 'Valid e-mail address!';
@@ -29,13 +45,6 @@ Or by dynamically instancing the base:
 	$test = new sdk_test();
 	if ( $test->is_email( 'test@test.com' ) )
 		echo 'Valid e-mail address!';
-
-Wordpress SDK
--------------
-
-See the below list for examples of how live plugins use the SDK:
-
-* [ThreeWP Broadcast](http://wordpress.org/extend/plugins/threewp-broadcast/)
 
 Third party plugins used
 -------
@@ -51,3 +60,4 @@ Contact
 -------
 
 The author can be contacted at: edward@plainview.se
+
