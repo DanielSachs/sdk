@@ -4,15 +4,23 @@ namespace plainview;
 
 /**
 	@brief			Collection of useful functions.
+	
+	@par			Versioning
+	
+	This base class contains the version of the SDK. Upon changing any part of the SDK, bump the version in here.
+	
 	@par			Changelog
 	
+	- 20130505		New: Wordpress tabs accept parameters.
+	- 20130504		Version bump for Wordpress SDK. \n
+					New: string_to_emails() added $mx parameter.
 	- 20130501		array_rekey: force conversion of arrays to arrays (from objects).
 	- 20130430		Added 3rdparty/phpmailer.
 	- 20130426		implode_html has switch the parameter order. $array is now first.
 	
 	@author			Edward Plainview		edward@plainview.se
 	@license		GPL v3
-	@version		20130430
+	@version		20130504
 **/
 class base
 {
@@ -23,6 +31,13 @@ class base
 	**/
 	protected static $instance;
 		
+	/**
+		@brief		The version of this SDK file.
+		@since		20130416
+		@var		$sdk_version
+	**/ 
+	protected $sdk_version = 20130505;
+	
 	/**
 		@brief		Constructor.
 		@since		20130425
@@ -43,7 +58,7 @@ class base
 	**/
 	public static function array_insert( $array, $position, $new_array )
 	{
-		$part1 = array_slice( $array, 0, $position, true ); 
+		$part1 = array_slice( $array, 0, $position, true );
 		$part2 = array_slice( $array, $position, null, true ); 
 		return $part1 + $new_array + $part2;
 	}
@@ -352,16 +367,17 @@ class base
 	/**
 		@brief		Converts a string to an array of e-mail addresses.
 		@param		string		$string		A multiline text-area.
+		@param		bool		$mx			Check each e-mail address for valid MX?
 		@return		array					An array of valid e-mail addresses. If no valid e-mail addresses are found, then the returned array is empty.
 		@since		20130425
 	**/
-	public static function string_to_emails( $string )
+	public static function string_to_emails( $string, $mx = true )
 	{
 		$string = str_replace( array( "\r", "\n", "\t", ';', ',', ' ' ), "\n", $string );
 		$lines = array_filter( explode( "\n", $string ) );
 		$r = array();
 		foreach( $lines as $line )
-			if ( self::is_email( $line ) )
+			if ( self::is_email( $line, $mx ) )
 				$r[ $line ] = $line;
 		ksort( $r );
 		return $r;

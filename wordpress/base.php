@@ -16,10 +16,13 @@
 	
 	@author		Edward Plainview	edward@plainview.se
 	@license	GPL v3
-	@version	20130501
+	@version	20130505
 	
 	@par	Changelog
 
+	- 2013-05-05	09:27	New: add_action, add_filter, add_shortcode.
+	- 2013-05-04	15:53	Version moved into \\plainview\\base.
+	- 2013-05-03	15:38	Fix: display_form_table now calls cell->attribute() not attr() (which doesn't exist).
 	- 2013-05-01	14:17	New: SDK version requirement tells the user which plugin is the SDK source. \n
 							New: tabs() can return a \\tabs object.
 	- 2013-04-30	08:54	New: ABSPATH check on construct().
@@ -137,13 +140,6 @@ class base
 	public $paths = array();
 	
 	/**
-		@brief		The version of this SDK file.
-		@since		20130416
-		@var		$sdk_version
-	**/ 
-	protected $sdk_version = 20130425;
-	
-	/**
 		@brief		Use this property in your extended class to require that the SDK is a specific version.
 		@since		20130416
 		@var		$sdk_version_required
@@ -225,7 +221,11 @@ class base
 		);
 
 		if ( $this->sdk_version_required > $this->sdk_version )
-			wp_die( sprintf( 'This plugin requires Plainview SDK version %s, but only %s from the plugin %s is available.', $this->sdk_version_required, $this->sdk_version, get_class( $this ) ) );
+			wp_die( sprintf( 'This plugin requires Plainview SDK version %s, but only %s from the plugin %s is available.',
+				$this->sdk_version_required,
+				$this->sdk_version,
+				dirname( __FILE__ )
+			) );
 		
 		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal') );
 		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal') );
@@ -932,6 +932,102 @@ class base
 	// -------------------------------------------------------------------------------------------------
 	
 	/**
+		@brief		Convenience function to add a Wordpress action.
+		@details	Using almost the same parameters as add_action(), this method can be used if the action has the same base method name as the callback.
+		
+		If that is the case, then $callback can be skipped. Priority and parameters can also be skipped if you are using the same default values as Wordpress' add_action().
+		
+		Example:
+		
+		@code
+			$this->add_action( 'plainview_enter_castle', 'action_plainview_enter_castle', 10, 1 );		// All parameters specified
+			$this->add_action( 'plainview_enter_castle', 'action_plainview_enter_castle' );				// Priority and parameter count skipped (using Wordpress defaults)
+			$this->add_action( 'plainview_enter_castle', 10, 1 );										// Calls $base->plainview_enter_castle
+			$this->add_action( 'plainview_enter_castle' );												// Calls $base->plainview_enter_castle
+			$this->add_action( 'plainview_enter_castle', null, 3 );										// Uses Wordpress default priority and three parameters.
+		@endcode
+		
+		@param		string		$action			The name of the action to create.
+		@param		mixed		$callback		Either the callback, or the priority, or nothing.
+		@param		mixed		$priority		If $callback is specified, then this is the priority. Else this is the amount of parameters.
+		@param		mixed		$parameters		Used only if callback and priority are specified.
+		@since		20130505
+	**/
+	public function add_action( $action, $callback = null, $priority = null, $parameters = null )
+	{
+		$args = array_merge( array( 'action' ), func_get_args() );
+		return call_user_func_array( array( $this, 'add_thing' ), $args );
+	}
+	
+	/**
+		@brief		Convenience function to add a Wordpress filter.
+		@details	Using almost the same parameters as add_filter(), this method can be used if the filter has the same base method name as the callback.
+		
+		If that is the case, then $callback can be skipped. Priority and parameters can also be skipped if you are using the same default values as Wordpress' add_filter().
+		
+		Example:
+		
+		@code
+			$this->add_filter( 'plainview_enter_castle', 'filter_plainview_enter_castle', 10, 1 );		// All parameters specified
+			$this->add_filter( 'plainview_enter_castle', 'filter_plainview_enter_castle' );				// Priority and parameter count skipped (using Wordpress defaults)
+			$this->add_filter( 'plainview_enter_castle', 10, 1 );										// Calls $base->plainview_enter_castle
+			$this->add_filter( 'plainview_enter_castle' );												// Calls $base->plainview_enter_castle
+			$this->add_filter( 'plainview_enter_castle', null, 3 );										// Uses Wordpress default priority and three parameters.
+		@endcode
+		
+		@param		string		$filter			The name of the filter to create.
+		@param		mixed		$callback		Either the callback, or the priority, or nothing.
+		@param		mixed		$priority		If $callback is specified, then this is the priority. Else this is the amount of parameters.
+		@param		mixed		$parameters		Used only if callback and priority are specified.
+		@since		20130505
+	**/
+	public function add_filter( $filter, $callback = null, $priority = null, $parameters = null )
+	{
+		$args = array_merge( array( 'filter' ), func_get_args() );
+		return call_user_func_array( array( $this, 'add_thing' ), $args );
+	}
+	
+	/**
+		@brief		Convenience method to add a shortwith with the same method name as the shortcode.
+		@param		string		$shortcode		Name of the shortcode, which should be the same name as the method to be called in the base.
+		@since		20130505
+	**/
+	public function add_shortcode( $shortcode )
+	{
+		return add_shortcode( $shortcode, array( $this, $shortcode ) );
+	}
+	
+	/**
+		@brief		Adds a Wordpress action or filter.
+		@see		add_action
+		@see		add_filter
+		@since		20130505
+	**/
+	public function add_thing()
+	{
+		$args = func_get_args();
+		// The add type is the first argument
+		$type = 'add_' . array_shift( $args );
+		$thing = $args[ 0 ];
+		// If the callback is not specified, then assume the same callback as the thing.
+		if ( ! isset( $args[ 1 ] ) )
+			$args[ 1 ] = $args[ 0 ];
+		// Is the callback anything but a string? That means parameter 1 is the priority.
+		if ( ! is_string( $args[ 1 ] ) )
+			array_splice( $args, 1, 0, $thing );
+		// * ... which is then turned into a self callback.
+		if ( ! is_array( $args[ 1 ] ) )
+			$args[ 1 ] = array( $this, $args[ 1 ] );
+		// No parameter count set? Unset it to allow add_* to use the default Wordpress value.
+		if ( isset( $args[ 3 ] ) && $args[ 3 ] === null )
+			unset( $args[ 3 ] );
+		// Is the priority set to null? Then use the Wordpress default.
+		if ( isset( $args[ 2 ] ) && $args[ 2 ] === null )
+			$args[ 2 ] = 10;
+		return call_user_func_array( $type, $args );
+	}
+	
+	/**
 		@brief		Display the time ago as human-readable string.
 		@param		$time_string	"2010-04-12 15:19"
 		@param		$time			An optional timestamp to base time difference on, if not now.
@@ -997,15 +1093,19 @@ class base
 	/**
 		@brief		Generate a wordpress check column in a table head.
 		
-		The options array is:
+		@details	The options array is:
 		- @e row @b [row]					Optional \plainview\wordpress\table\row into which to add the check column.
 		
-		@param		array		$options		Options array.
+		A \\plainview\\wordpress\\table\\row can also be given as the parameter.
+		
+		@param		array		$options		Options array or a table row object.
 		@return		mixed						Either nothing, if a table_row was supplied, or a string.
 		@since		20130416
 	**/
 	public function check_column_head( $options = array() )
 	{
+		if ( is_a( $options, '\\plainview\\wordpress\\table\\row' ) )
+			$options = array( 'row' => $options );
 		$o = self::merge_objects( array(
 			'row' => null,
 		), $options );
@@ -1065,7 +1165,7 @@ class base
 			
 			if ( $input[ 'type' ] == 'markup' )
 			{
-				$table->body()->row()->td()->attr( 'colspan', 2 )->text( $options->form->make_input( $input ) );
+				$table->body()->row()->td()->attribute( 'colspan', 2 )->text( $options->form->make_input( $input ) );
 				continue;
 			}
 			

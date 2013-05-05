@@ -4,6 +4,11 @@ namespace plainview\wordpress\tabs;
 
 /**
 	@brief		Handles creation of tabs in the Wordpress admin panel.
+	
+	@par		Changelog
+	
+	- 20130503	Initial release
+	
 	@author		Edward Plainview	edward@plainview.se
 	@since		20130503
 	@version	20130503
@@ -91,7 +96,30 @@ class tabs
 		$this->base = $base;
 	}
 	
-	public function __tostring()
+	public function __toString()
+	{
+		return $this->output();
+	}
+	
+	/**
+		@brief		Sets the current tab.
+		@param		string		$id		ID of tab to make the default.
+		@return		tabs				Object itself.
+		@since		20130503
+	**/
+	public function default_tab( $id )
+	{
+		$this->default_tab = $id;
+		return $this;
+	}
+	
+	/**
+		@brief		Return the tabs.
+		@detail		Although the tabs can be displayed using __toString, this method allows for finding and catching exceptions, which isn't allowed in __toString.
+		@return		string		The tabs as a string.
+		@since		20130503
+	**/
+	public function output()
 	{
 		if ( $this->get === null )
 			$this->get = $_GET;
@@ -176,37 +204,14 @@ class tabs
 			
 			echo $r;
 			echo '<div style="clear: both"></div>';
-	
-			if ( is_array( $tab->callback ) )
-			{
-				$c = $tab->callback[ 0 ];
-				$f = $tab->callback[ 1 ];
-				$c->$f();
-			}
-			else
-			{
-				$c = $tab->callback;
-				$c();
-			}
-			echo '</div>';
 			
-			ob_end_flush();
-			return '';
+			call_user_func_array( $tab->callback, $tab->parameters );
+			
+			echo '</div>';
+			$r = ob_get_clean();	
 		}
-		else
-			return $r;
-	}
-	
-	/**
-		@brief		Sets the current tab.
-		@param		string		$id		ID of tab to make the default.
-		@return		tabs				Object itself.
-		@since		20130503
-	**/
-	public function default_tab( $id )
-	{
-		$this->default_tab = $id;
-		return $this;
+		
+		return $r;
 	}
 	
 	/**
@@ -231,7 +236,14 @@ class tabs
 
 /**
 	@brief		Actual tab that tabs contains.
+	
+	@par		Changelog
+	
+	- 20130505	New: parameters()
+	- 20130503	Initial release
+	
 	@since		20130503
+	@version	20130505
 **/
 class tab
 {
@@ -272,6 +284,13 @@ class tab
 		@var		$name
 	**/
 	public $name;
+	
+	/**
+		@brief		An optional array of parameters to send to the callback.
+		@since		20130505
+		@var		$parameters
+	**/
+	public $parameters = array();
 	
 	/**
 		@brief		Prefix that is displayed before displaying the tab name.
@@ -384,6 +403,18 @@ class tab
 	public function name_()
 	{
 		return $this->name( call_user_func_array( array( $this->tabs->base, '_' ), func_get_args() ) );
+	}
+	
+	/**
+		@brief		Set the parameters for the tab's callback.
+		@detail		All parameters used in this method are also sent directly to the callback.
+		@return		object					This tab.
+		@since		20130505
+	**/
+	public function parameters()
+	{
+		$this->parameters = func_get_args();
+		return $this;
 	}
 	
 	/**
