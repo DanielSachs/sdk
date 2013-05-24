@@ -4,23 +4,32 @@ namespace plainview;
 
 /**
 	@brief			Collection of useful functions.
-	
+
 	@par			Versioning
-	
+
 	This base class contains the version of the SDK. Upon changing any part of the SDK, bump the version in here.
-	
+
 	@par			Changelog
-	
-	- 20130505		New: Wordpress tabs accept parameters.
-	- 20130504		Version bump for Wordpress SDK. \n
-					New: string_to_emails() added $mx parameter.
+
+	This list only shows which classes were modified. For a detailed list, see the class' changelog.
+
+	- 20130524		form2
+	- 20130515		mail \n
+					New: temp_directory() and temp_file().
+	- 20130507		Table.
+	- 20130506		Wordpress tabs. \n
+					HTML namespace. \n
+					New: uuid().
+	- 20130505		New: Wordpress tabs accept parameters \n
+					New: Wordpress CLI.
+	- 20130504		New: string_to_emails() added $mx parameter.
 	- 20130501		array_rekey: force conversion of arrays to arrays (from objects).
 	- 20130430		Added 3rdparty/phpmailer.
 	- 20130426		implode_html has switch the parameter order. $array is now first.
-	
+
 	@author			Edward Plainview		edward@plainview.se
-	@license		GPL v3
-	@version		20130504
+	@copyright		GPL v3
+	@version		20130515
 **/
 class base
 {
@@ -30,14 +39,14 @@ class base
 		@var		$instance
 	**/
 	protected static $instance;
-		
+
 	/**
 		@brief		The version of this SDK file.
 		@since		20130416
 		@var		$sdk_version
-	**/ 
-	protected $sdk_version = 20130505;
-	
+	**/
+	protected $sdk_version = 20130524;
+
 	/**
 		@brief		Constructor.
 		@since		20130425
@@ -46,7 +55,7 @@ class base
 	{
 		self::$instance = $this;
 	}
-	
+
 	/**
 		@brief		Insert an array into another.
 		@details	Like array_splice but better, because it even inserts the new key.
@@ -59,15 +68,15 @@ class base
 	public static function array_insert( $array, $position, $new_array )
 	{
 		$part1 = array_slice( $array, 0, $position, true );
-		$part2 = array_slice( $array, $position, null, true ); 
+		$part2 = array_slice( $array, $position, null, true );
 		return $part1 + $new_array + $part2;
 	}
-	
+
 	/**
 		@brief		Sort an array of arrays using a specific key in the subarray as the sort key.
 		@param		array		$array		An array of arrays.
 		@param		string		$key		Key in subarray to use as sort key.
-		@return		array					The array of arrays. 
+		@return		array					The array of arrays.
 		@since		20130416
 	**/
 	public static function array_sort_subarrays( $array, $key )
@@ -75,9 +84,9 @@ class base
 		// In order to be able to sort a bunch of objects, we have to extract the key and use it as a key in another array.
 		// But we can't just use the key, since there could be duplicates, therefore we attach a random value.
 		$sorted = array();
-		
+
 		$is_array = is_array( reset( $array ) );
-		
+
 		foreach( $array as $index => $item )
 		{
 			$item = (object) $item;
@@ -90,11 +99,11 @@ class base
 					$random_key = $item->$key . '-' . $rand;
 			}
 			while ( isset( $sorted[ $random_key ] ) );
-			
+
 			$sorted[ $random_key ] = array( 'key' => $index, 'value' => $item );
 		}
 		ksort( $sorted );
-		
+
 		// The array has been sorted, we want the original array again.
 		$r = array();
 		foreach( $sorted as $item )
@@ -102,10 +111,10 @@ class base
 			$value = ( $is_array ? (array)$item[ 'value' ] : $item[ 'value' ] );
 			$r[ $item['key'] ] = $item['value'];
 		}
-			
+
 		return $r;
 	}
-	
+
 	/**
 		@brief		Make a value a key.
 		@details	Given an array of arrays, take the key from the subarray and makes it the key of the main array.
@@ -124,7 +133,7 @@ class base
 		}
 		return $r;
 	}
-	
+
 	/**
 		@brief		Check that the supplied text is plaintext.
 		@details	Strips out HTML. Inspired by Drupal's check_plain.
@@ -138,7 +147,24 @@ class base
 		$text = stripslashes( $text );
 		return $text;
 	}
-	
+
+	/**
+		@brief		Creates a form2 object.
+		@return		\\plainview\\form2\\form		A new form object.
+		@since		20130509
+	**/
+	public function form2()
+	{
+		if ( ! class_exists( '\\plainview\\form2\\form' ) )
+			require_once( dirname( __FILE__ ) . '/form2/form.php' );
+
+		if ( ! class_exists( '\\plainview\\wordpress\\form2\\form' ) )
+			require_once( 'form2.php' );
+
+		$form = new \plainview\wordpress\form2\form();
+		return $form;
+	}
+
 	/**
 		@brief		Convenience function to wrap a string in h1 tags.
 		@param		string		$string		The string to wrap.
@@ -150,7 +176,7 @@ class base
 	{
 		return self::open_close_tag( $string, 'h1' );
 	}
-	
+
 	/**
 		@brief		Convenience function to wrap a string in h2 tags.
 		@param		string		$string		The string to wrap.
@@ -162,7 +188,7 @@ class base
 	{
 		return self::open_close_tag( $string, 'h2' );
 	}
-	
+
 	/**
 		@brief		Convenience function to wrap a string in h3 tags.
 		@param		string		$string		The string to wrap.
@@ -174,10 +200,10 @@ class base
 	{
 		return self::open_close_tag( $string, 'h3' );
 	}
-	
+
 	/**
 		@brief		Returns a hash value of a string. The standard hash type is sha512 (64 chars).
-		
+
 		@param		string		$string			String to hash.
 		@param		string		$type			Hash to use. Default is sha512.
 		@return									Hashed string.
@@ -187,7 +213,7 @@ class base
 	{
 		return hash($type, $string);
 	}
-	
+
 	/**
 		@brief		Implode an array in an HTML-friendly way.
 		@details	Used to implode arrays using HTML tags before, between and after the array. Good for lists.
@@ -201,7 +227,7 @@ class base
 	{
 		return $prefix . implode( $suffix . $prefix, $array ) . $suffix;
 	}
-	
+
 	/**
 		@brief		Return the instance of this object class.
 		@return		base		The instance of this object class.
@@ -211,7 +237,7 @@ class base
 	{
 		return self::$instance;
 	}
-	
+
 	/**
 		@brief		Check en e-mail address for validity.
 		@param		string		$address		Address to check.
@@ -223,34 +249,34 @@ class base
 	{
 		if ( filter_var( $address, FILTER_VALIDATE_EMAIL ) != $address )
 			return false;
- 
+
 		// If no need to check the MX, and we've gotten this far, then it's ok.
 		if ( $check_mx == false )
 			return true;
-		
+
 		// Check the DNS record.
 		$host = preg_replace( '/.*@/', '', $address );
 		if ( ! checkdnsrr( $host, 'MX' ) )
 			return false;
-		
+
 		return true;
 	}
-	
+
 	/**
 		@brief		Creates a mail object.
 		@return		\\plainview\\mail\\mail		A new PHPmailer object.
 		@since		20130430
-	**/ 
+	**/
 	public static function mail()
 	{
 		if ( ! class_exists( '\\plainview\\mail' ) )
 			require_once( dirname( __FILE__ ) . '/mail.php' );
-		
+
 		$mail = new \plainview\mail\mail();
 		$mail->CharSet = 'UTF-8';
 		return $mail;
 	}
-	
+
 	/**
 		@brief		Merge two objects.
 		@details	The objects can even be arrays, since they're automatically converted into objects.
@@ -266,7 +292,7 @@ class base
 			$base->$key = $value;
 		return $base;
 	}
-	
+
 	/**
 		@brief		Returns the number corrected into the min and max values.
 		@param		int		$number		Number to adjust.
@@ -281,11 +307,11 @@ class base
 		$number = max( $min, $number );
 		return $number;
 	}
-	
+
 	/**
-		@brief		Tries to figure out the mime type of this filename.		
+		@brief		Tries to figure out the mime type of this filename.
 		@param		string		$filename		The complete file path.
-		@return		string		
+		@return		string
 		@since		20130416
 	**/
 	public static function mime_type( $filename )
@@ -298,7 +324,7 @@ class base
 			$r = preg_replace( '/;.*/', '', $r );
 			return $r;
 		}
-		
+
 		// Try to use the finfo class.
 		if ( class_exists( 'finfo' ) )
 		{
@@ -306,18 +332,18 @@ class base
 			$r = $fi->buffer(file_get_contents( $filename ));
 			return $r;
 		}
-		
+
 		// Last resort: mime_content_type which rarely works properly.
 		if ( function_exists( 'mime_content_type' ) )
 		{
 			$r = mime_content_type ( $filename );
 			return $r;
 		}
-		
+
 		// Nope. Return a general value.
 		return 'application/octet-stream';
 	}
-	
+
 	/**
 		@brief		Enclose in string in an HTML element tag.
 		@details	Parameter order: enclose THIS in THIS
@@ -330,7 +356,7 @@ class base
 	{
 		return sprintf( '<%s>%s</%s>', $tag, $string, $tag );
 	}
-	
+
 	/**
 		@brief		Recursively removes a directory.
 		@details	Assumes that all files in the directory, and the dir itself, are writeable.
@@ -352,7 +378,7 @@ class base
 			rmdir( $directory );
 		}
 	}
-	
+
 	/**
 		@brief		Returns a stack trace as a string.
 		@return		string			A stacktrace.
@@ -363,7 +389,7 @@ class base
 		$e = new \Exception;
 		return var_export( $e->getTraceAsString(), true );
 	}
-	
+
 	/**
 		@brief		Converts a string to an array of e-mail addresses.
 		@param		string		$string		A multiline text-area.
@@ -382,7 +408,7 @@ class base
 		ksort( $r );
 		return $r;
 	}
-	
+
 	/**
 		@brief		Strips the array of slashes. Used for $_POSTS.
 		@param		array		$post		The array to strip. If null then $_POST is used.
@@ -396,10 +422,10 @@ class base
 		foreach( $post as $key => $value )
 			if ( ! is_array( $value ) && strlen( $value ) > 1 )
 				$post[ $key ] = stripslashes( $value );
-		
+
 		return $post;
 	}
-	
+
 	/**
 		@brief		Multibyte strtolower.
 		@param		string		$string			String to lowercase.
@@ -408,9 +434,9 @@ class base
 	**/
 	public static function strtolower( $string )
 	{
-		return mb_strtolower( $string ); 
+		return mb_strtolower( $string );
 	}
-	
+
 	/**
 		@brief		Multibyte strtoupper.
 		@param		string		$string			String to uppercase.
@@ -419,7 +445,58 @@ class base
 	**/
 	public static function strtoupper( $string )
 	{
-		return mb_strtoupper( $string ); 
+		return mb_strtoupper( $string );
+	}
+
+	/**
+		@brief		Create a new temporary directory in the system's temp dir, and return the name.
+		@param		string		$subdirectory		Prefix of subdir.
+		@return		string							Complete path to new directory.
+		@since		20130515
+	**/
+	public static function temp_directory( $prefix = null )
+	{
+		if ( $prefix === null )
+			$prefix = self::uuid( 8 );
+		$prefix .= self::uuid( 8 );
+		$r = sys_get_temp_dir() . '/' . $prefix;
+		mkdir( $r );
+		if ( ! is_readable( $r ) )
+			return false;
+		return $r;
+	}
+
+	/**
+		@brief		Return the name to a temporary file name, optionally in a specific temp directory.
+		@param		string		$prefix		Prefix of temporary file.
+		@param		string		$temp_dir	Optional temporary directory in which to create the temp file.
+		@return		string					Complete filename to a temporary file.
+		@since		20130515
+	**/
+	public static function temp_file( $prefix = null, $temp_dir = null )
+	{
+		if ( $prefix === null )
+			$prefix = 'plainview_sdk_base_';
+		if ( $temp_dir !== null )
+			$temp_dir = self::temp_directory( $temp_dir );
+		else
+			$temp_dir = sys_get_temp_dir();
+
+		return tempnam( $temp_dir, $prefix );
+	}
+
+	/**
+		@brief		Produce a random uuid.
+		@param		int			$length		Length of ID to return.
+		@return		string					An x-character long random ID.
+		@since		20130506
+	**/
+	public static function uuid( $length = 64 )
+	{
+		$r = 'u';
+		while( strlen( $r ) < $length )
+			$r .= self::hash( microtime() . rand( 0, PHP_INT_MAX ) );
+		return substr( $r, 0, $length );
 	}
 }
 
