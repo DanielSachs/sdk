@@ -1205,7 +1205,7 @@ class base
 
 			if ( $input[ 'type' ] == 'hidden' )
 			{
-				$r .= $options['form']->make_input( $input );
+				$r .= $options->form->make_input( $input );
 				continue;
 			}
 			$o = new \stdClass();
