@@ -6,6 +6,7 @@ A toolkit of commonly used classes and functions, including Wordpress and Drupal
 The SDK contains:
 
 * Base set of useful functions
+* Form manipulation class for HTML5
 * Wordpress SDK - fully fledged SDK based on the base classes
 * Drupal SDK - currently only a Drupalized db_aware_object class
 
@@ -30,7 +31,7 @@ Standalone usage
 Include the sdk.php file.
 
 	require_once( 'plainview_sdk/sdk.php' );
-	
+
 The SDK's function can now be accessed statically:
 
 	if ( \plainview\base::is_email( 'test@test.com' ) )
@@ -41,12 +42,12 @@ Or by dynamically instancing the base:
 	class sdk_test extends \plainview\base
 	{
 	}
-	
+
 	$test = new sdk_test();
 	if ( $test->is_email( 'test@test.com' ) )
 		echo 'Valid e-mail address!';
 
-Third party plugins used
+Third party libraries used
 -------
 
 * [PHP Mailer](http://phpmailer.sourceforge.net)
