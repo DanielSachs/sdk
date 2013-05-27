@@ -56,6 +56,7 @@ require_once( 'table_element.php' );
 
 	@par		Changelog
 
+	- 20130527		Element UUID length extended from 4 to 8 to help prevent conflicts.
 	- 20130513		Table self indents, instead of relying on html\\element.
 	- 20130510		Sections do not display if they are empty.
 	- 20130509		_() name_() and title_() added to aid in translation.
@@ -239,7 +240,7 @@ class section
 	{
 		return $this->table->indentation() + 1;
 	}
-	
+
 	/**
 		@brief		Retrieve an existing or create a new row, with an optional id.
 		@details	Call with no ID to create a new row. Call with an ID that does not exist and a new row will be created
@@ -345,7 +346,7 @@ class row
 	public function __construct( $section, $id = null )
 	{
 		if ( $id === null )
-			$id = \plainview\base::uuid( 4 );
+			$id = \plainview\base::uuid( 8 );
 		$this->id = $id;
 		$this->cells = array();
 		$this->section = $section;
@@ -361,7 +362,7 @@ class row
 			return '';
 
 		$this->attribute( 'id' )->set( $this->id );
-		
+
 		$r = $this->indent();
 		$r .= $this->open_tag() . "\n";
 		foreach( $this->cells as $cell )
@@ -452,7 +453,7 @@ class cell
 	public function __construct( $row, $id = null )
 	{
 		if ( $id === null )
-			$id = \plainview\base::uuid( 4 );
+			$id = \plainview\base::uuid( 8 );
 		$this->id = $id;
 		$this->row = $row;
 	}
@@ -467,7 +468,7 @@ class cell
 	{
 		return $this->row->indentation() + 1;
 	}
-	
+
 	/**
 		@brief		Return the row of this cell.
 		@details	Is used to continue the ->td()->row()->td() chain.
