@@ -6,16 +6,18 @@ A toolkit of commonly used classes and functions, including Wordpress and Drupal
 The SDK contains:
 
 * Base set of useful functions
-* Form manipulation class for HTML5
-* Wordpress SDK - fully fledged SDK based on the base classes
 * Drupal SDK - currently only a Drupalized db_aware_object class
+* Form2 manipulation class for HTML5
+* Table manipulation class
+* Wordpress SDK - fully fledged SDK based on the base classes
+* XHTML element class
 
 Base
 ----
 
 * base.php is a base class of [mostly] static functions
 * db_aware_object is a trait that your objects can use to update themselves in the database
-* form.php manipulates XHTML forms
+* form.php is an obsolete form handling class. Use form2 instead.
 * mail.php is a wrapper for PHPMailer
 * sdk.php is the file your application can include to include all of the SDK at once
 * table.php manipulates XHTML tables
