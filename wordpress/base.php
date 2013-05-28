@@ -20,6 +20,7 @@
 
 	@par	Changelog
 
+	- 20130528				Fix: p() checks for sprintf problems.
 	- 2013-05-07	07:45	New: check_column_* uses a th ID.
 	- 2013-05-05	09:27	New: add_action, add_filter, add_shortcode. \n
 					15:48	New: CLI handling. cli_pot(), do_cli(), pot_files(), pot_keywords().
@@ -246,7 +247,7 @@ class base
 		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal') );
 		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal') );
 
-		add_action( 'admin_init', array(&$this, 'admin_init') );
+		$this->add_action( 'admin_init' );
 	}
 
 	/**
@@ -1505,7 +1506,10 @@ class base
 	public function p( $string, $args = '' )
 	{
 		$args = func_get_args();
-		return wpautop( call_user_func_array( 'sprintf', $args ) );
+		$s2 = @ call_user_func_array( 'sprintf', $args );
+		if ( $s2 == '' )
+			$s2 = $string;
+		return wpautop( $s2 );
 	}
 
 	/**

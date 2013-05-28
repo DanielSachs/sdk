@@ -13,6 +13,7 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130528		wordpress\tabs
 	- 20130527		table
 	- 20130524		form2
 	- 20130515		mail \n
@@ -30,7 +31,7 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130515
+	@version		20130528
 **/
 class base
 {
@@ -46,7 +47,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130527;
+	protected $sdk_version = 20130528;
 
 	/**
 		@brief		Constructor.

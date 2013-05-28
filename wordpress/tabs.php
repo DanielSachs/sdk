@@ -7,12 +7,13 @@ namespace plainview\wordpress\tabs;
 
 	@par		Changelog
 
+	- 20130528	tabs are now \plainview\html\elements.
 	- 20130506	output() changed to render()
 	- 20130503	Initial release
 
 	@author		Edward Plainview	edward@plainview.se
 	@since		20130503
-	@version	20130503
+	@version	20130528
 **/
 class tabs
 {
@@ -196,7 +197,7 @@ class tabs
 		{
 			$tab = $this->tab( $selected );
 			ob_start();
-			echo '<div class="wrap">';
+			echo $tab->open_tag();
 			if ( $this->display_tab_name )
 			{
 				$name = ( $tab->heading != '' ? $tab->heading : $tab->name );
@@ -208,7 +209,7 @@ class tabs
 
 			call_user_func_array( $tab->callback, $tab->parameters );
 
-			echo '</div>';
+			echo $tab->close_tag();
 			$r = ob_get_clean();
 		}
 
@@ -240,14 +241,17 @@ class tabs
 
 	@par		Changelog
 
-	- 20130505	New: parameters()
-	- 20130503	Initial release
+	- 20130528	Uses HTML element.
+	- 20130505	New: parameters().
+	- 20130503	Initial release.
 
 	@since		20130503
 	@version	20130505
 **/
 class tab
 {
+	use \plainview\html\element;
+
 	/**
 		@brief		Tab callback function.
 		@details	An array of (class, function_name) or just a function name.
@@ -321,11 +325,14 @@ class tab
 	**/
 	public $title;
 
+	public $tag = 'div';
+
 	public function __construct( $tabs )
 	{
 		$this->tabs = $tabs;
 		$this->prefix = $tabs->tab_prefix;
 		$this->suffix = $tabs->tab_suffix;
+		$this->css_class( 'tab', 'wrap' );
 		return $this;
 	}
 
