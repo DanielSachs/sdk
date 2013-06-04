@@ -3,7 +3,7 @@
 namespace plainview\wordpress\form2\inputs;
 
 class primary_button
-	extends \plainview\form2\inputs\submit
+	extends button
 {
 	public function _construct()
 	{

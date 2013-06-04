@@ -21,6 +21,7 @@ class submit
 	**/
 	public function pressed()
 	{
+		$value = $this->form()->get_post_value( $this->make_name() );
 		return $this->get_post_value() !== null;
 	}
 }

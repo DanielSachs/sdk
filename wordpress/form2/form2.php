@@ -2,9 +2,23 @@
 
 namespace plainview\wordpress\form2;
 
+require_once( 'inputs/class.button.php' );
 require_once( 'inputs/class.primary_button.php' );
 require_once( 'inputs/class.secondary_button.php' );
 
+/**
+	@brief		Wordpress-centric form2.
+
+	@details
+
+	Changelog
+	---------
+
+	- 20130604		display_form_table() displays asterisks for required inputs.
+	- 20130416		Initial version.
+
+	@version		20130604
+**/
 class form
 	extends \plainview\form2\form
 {
@@ -108,7 +122,12 @@ class form
 			if ( ! $input->validates() )
 				$row->css_class( 'does_not_validate' );
 
-			$row->th()->text( $input->display_label() )->row()
+			$label = $input->display_label();
+			if ( $input->is_required() )
+				$label .= sprintf( ' <sup><abbr title="">*</abbr></sup>',
+					$this->base->_( 'This input is required.' )
+				);
+			$row->th()->text( $label )->row()
 				->td()->textf( '<div class="input_itself">%s</div>%s',
 					$input->display_input( $input ),
 					$description

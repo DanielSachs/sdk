@@ -36,6 +36,10 @@ class select
 		if ( $input->is_required() )
 			$input->css_class( 'required' );
 
+		// Multiples require the [] part that isn't really part of the name.
+		if ( $input->is_multiple() )
+			$input->set_attribute( 'name', $input->make_name() );
+
 		$r = $input->indent() . $input->open_tag() . "\n";
 		foreach( $input->options as $option )
 		{
@@ -55,9 +59,45 @@ class select
 	}
 
 	/**
-		@brief
-		@param
-		@return
+		@brief		Returns the input's value from the _POST variable.
+		@details	Will strip off slashes before returning the value.
+		@return		string		The value of the _POST variable. If no value was in the post, null is returned.
+		@see		use_post_value()
+		@since		20130524
+	**/
+	public function get_post_value()
+	{
+		$name = $this->make_name();
+		if ( $this->is_multiple() )
+			$name = substr( $name, 0, -2 );
+		return $this->form()->get_post_value( $name );
+	}
+	/**
+		@brief		Return if the user may select multiple options.
+		@return		bool		True if the multiple attribute is set.
+		@since		20130506
+	**/
+	public function is_multiple()
+	{
+		return $this->get_boolean_attribute( 'multiple' );
+	}
+
+	/**
+		@brief		Make the name of the input and maybe correct for multiplicity.
+		@return		string		The HTML name of the input.
+	**/
+	public function make_name()
+	{
+		$name = parent::make_name();
+		if ( $this->is_multiple() )
+			$name .= '[]';
+		return $name;
+	}
+
+	/**
+		@brief		Allow the user to select several options.
+		@param		bool		$multiple		True if the user is allowed to select multiple options.
+		@return		$this		This object.
 		@since		20130524
 	**/
 	public function multiple( $multiple = true )

@@ -8,6 +8,7 @@ namespace plainview\html;
 
 	@par		Changelog
 
+	- 20130604	required() sets aria-required attribute also.
 	- 20130524	New: get_boolean_attribute, set_boolean_attribute()
 	- 20130514	New: clear_attributes()
 	- 20130513	Element does no longer indent itself. css_class and css_style can take several arguments.
@@ -15,7 +16,7 @@ namespace plainview\html;
 	- 20130506	First version.
 
 	@since		20130506
-	@version	20130524
+	@version	20130604
 **/
 trait element
 {
@@ -362,7 +363,8 @@ trait attributes
 
 	public function required( $required = true )
 	{
-		return $this->set_attribute( 'required', $required );
+		$this->set_boolean_attribute( 'aria-required', $required );
+		return $this->set_boolean_attribute( 'required', $required );
 	}
 
 	public function spellcheck( $spellcheck = true )

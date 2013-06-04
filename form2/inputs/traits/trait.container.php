@@ -151,6 +151,9 @@ trait container
 	/**
 		@brief		Retrieve or create an input.
 		@details	When trying to retrieve an input will recurse into all inputs that are containers.
+
+		Names may not include points.
+
 		@param		string		$name		Name of input to retrieve / create.
 		@param		string		$type		The type of input to create.
 		@return		input		The found or created input.
@@ -177,6 +180,7 @@ trait container
 		$form = $this->form();
 		$input_type = $form->get_input_type( $type );
 		$type = $input_type->class;
+		$name = str_replace( '.', '_', $name );
 		$input = new $type( $this, $name );
 		$this->add( $input );
 		return $input;

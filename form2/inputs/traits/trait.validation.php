@@ -4,6 +4,13 @@ namespace plainview\form2\inputs\traits;
 
 /**
 	@brief		Validation handling.
+	@details
+
+	Changelog
+	---------
+
+	20130604	validate_required() has better checking.
+
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
 	@version	20130524
@@ -124,9 +131,18 @@ trait validation
 	**/
 	public function validate_required()
 	{
-		$trimmed_value = trim( $this->validation_value );
+		$check_value = $this->validation_value;
+		$error = false;
 
-		if ( strlen( $trimmed_value ) < 1 )
+		if ( is_string( $check_value ) )
+		{
+			$check_value = trim( $check_value );
+			$error = strlen( $check_value ) < 1;
+		}
+		else
+			$error = $check_value === null;
+
+		if ( $error )
 			$this->validation_error()->set_unfiltered_label_( 'Please fill in %s.', '<em>' . $this->label . '</em>' );
 	}
 

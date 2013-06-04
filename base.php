@@ -13,7 +13,8 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
-	- 20130528		wordpress\tabs
+	- 20130604		current_url
+	- 20130530		wordpress tabs.
 	- 20130527		table
 	- 20130524		form2
 	- 20130515		mail \n
@@ -31,7 +32,7 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130528
+	@version		20130604
 **/
 class base
 {
@@ -47,7 +48,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130528;
+	protected $sdk_version = 20130604;
 
 	/**
 		@brief		Constructor.
@@ -148,6 +149,37 @@ class base
 		$text = strip_tags( $text );
 		$text = stripslashes( $text );
 		return $text;
+	}
+
+	/**
+		@brief		Build the complete current URL.
+		@param		array		$SERVER		Optional _SERVER array to use, instead of the normal _SERVER array.
+		@return		string		The complete URL, with http / https, port, etc.
+		@since		20130604
+	**/
+	public static function current_url( $SERVER = null )
+	{
+		if ( $SERVER === null )
+			$SERVER = $_SERVER;
+
+		$ssl = ( $SERVER[ 'SSL_PROTOCOL' ] != '' );
+
+		$port = $SERVER[ 'SERVER_PORT' ];
+		if ( $ssl && $port == 443 )
+			$port = '';
+		if ( ! $ssl && $port == 80 )
+			$port = '';
+		if ( $port != '' )
+			$port = ':' . $port;
+
+		$url = $SERVER[ 'REQUEST_URI' ];
+
+		return sprintf( '%s://%s%s%s',
+			$ssl ? 'https' : 'http',
+			$SERVER[ 'HTTP_HOST' ],
+			$port,
+			$url
+		);
 	}
 
 	/**

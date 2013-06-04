@@ -16,10 +16,11 @@
 
 	@author		Edward Plainview	edward@plainview.se
 	@copyright	GPL v3
-	@version	20130505
+	@version	20130604
 
 	@par	Changelog
 
+	- 20130604				Code: add_shortcode() has an optional callback parameter.
 	- 20130528				Fix: p() checks for sprintf problems.
 	- 2013-05-07	07:45	New: check_column_* uses a th ID.
 	- 2013-05-05	09:27	New: add_action, add_filter, add_shortcode. \n
@@ -998,11 +999,14 @@ class base
 	/**
 		@brief		Convenience method to add a shortwith with the same method name as the shortcode.
 		@param		string		$shortcode		Name of the shortcode, which should be the same name as the method to be called in the base.
+		@param		string		$callback		An optional callback method. If null the callback is assumed to have the same name as the shortcode itself.
 		@since		20130505
 	**/
-	public function add_shortcode( $shortcode )
+	public function add_shortcode( $shortcode, $callback = null )
 	{
-		return add_shortcode( $shortcode, array( $this, $shortcode ) );
+		if ( $callback === null )
+			$callback = $shortcode;
+		return add_shortcode( $shortcode, array( $this, $callback ) );
 	}
 
 	/**

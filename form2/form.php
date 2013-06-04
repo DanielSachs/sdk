@@ -154,11 +154,14 @@ require_once( 'inputs/classes/class.week.php' );
 	Changelog
 	---------
 
+	- 20130604	Errors can __tostring() themselves. \n
+				is_posting() automatically calls post(). \n
+				validate_required() has better checking.
 	- 20130524	Initial version
 
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130524
+	@version	20130604
 **/
 class form
 {
@@ -364,16 +367,24 @@ class form
 
 	/**
 		@brief		Is there data in the POST array?
+		@details	Automatically calls post() with the given $post variable, if necessary.
+
+		Necessary = the _POST contains data.
+
 		@param		array		$post		Optional POST array to check. If not specified will use _POST.
 		@return		this		Object chaining.
 		@see		action()
 		@see		enctype()
+		@see		post()
 		@since		20130524
 	**/
 	public function is_posting( array $post = null )
 	{
 		$post = ( $post === null ? $_POST : $post );
-		return count( $post ) > 0;
+		$posting = count( $post ) > 0;
+		if ( $posting )
+			$this->post( $post );
+		return $posting;
 	}
 
 	/**

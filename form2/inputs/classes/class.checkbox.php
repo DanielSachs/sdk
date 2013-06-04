@@ -30,7 +30,7 @@ class checkbox
 
 	public function is_checked()
 	{
-		return $this->get_attribute( 'checked' );
+		return $this->get_boolean_attribute( 'checked' );
 	}
 
 	public function use_post_value()

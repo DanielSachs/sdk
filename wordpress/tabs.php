@@ -7,13 +7,13 @@ namespace plainview\wordpress\tabs;
 
 	@par		Changelog
 
-	- 20130528	tabs are now \plainview\html\elements.
+	- 20130530	get() and get_key() added.
 	- 20130506	output() changed to render()
 	- 20130503	Initial release
 
 	@author		Edward Plainview	edward@plainview.se
 	@since		20130503
-	@version	20130528
+	@version	20130530
 **/
 class tabs
 {
@@ -105,13 +105,37 @@ class tabs
 
 	/**
 		@brief		Sets the current tab.
-		@param		string		$id		ID of tab to make the default.
-		@return		tabs				Object itself.
+		@param		string		$id				ID of tab to make the default.
+		@return		tabs						Object chaining.
 		@since		20130503
 	**/
 	public function default_tab( $id )
 	{
 		$this->default_tab = $id;
+		return $this;
+	}
+
+	/**
+		@brief		Sets the _GET array.
+		@param		array		$get			The new _GET array from which to get the current tab.
+		@return		tabs						Object chaining.
+		@since		20130530
+	**/
+	public function get( $get )
+	{
+		$this->get = $get;
+		return $this;
+	}
+
+	/**
+		@brief		Sets the get key.
+		@param		string		$get_key		New key for the _GET array.
+		@return		tabs						Object chaining.
+		@since		20130530
+	**/
+	public function get_key( $get_key )
+	{
+		$this->get_key = $get_key;
 		return $this;
 	}
 
@@ -197,7 +221,7 @@ class tabs
 		{
 			$tab = $this->tab( $selected );
 			ob_start();
-			echo $tab->open_tag();
+			echo '<div class="wrap">';
 			if ( $this->display_tab_name )
 			{
 				$name = ( $tab->heading != '' ? $tab->heading : $tab->name );
@@ -209,7 +233,7 @@ class tabs
 
 			call_user_func_array( $tab->callback, $tab->parameters );
 
-			echo $tab->close_tag();
+			echo '</div>';
 			$r = ob_get_clean();
 		}
 
@@ -241,17 +265,14 @@ class tabs
 
 	@par		Changelog
 
-	- 20130528	Uses HTML element.
-	- 20130505	New: parameters().
-	- 20130503	Initial release.
+	- 20130505	New: parameters()
+	- 20130503	Initial release
 
 	@since		20130503
 	@version	20130505
 **/
 class tab
 {
-	use \plainview\html\element;
-
 	/**
 		@brief		Tab callback function.
 		@details	An array of (class, function_name) or just a function name.
@@ -325,14 +346,11 @@ class tab
 	**/
 	public $title;
 
-	public $tag = 'div';
-
 	public function __construct( $tabs )
 	{
 		$this->tabs = $tabs;
 		$this->prefix = $tabs->tab_prefix;
 		$this->suffix = $tabs->tab_suffix;
-		$this->css_class( 'tab', 'wrap' );
 		return $this;
 	}
 

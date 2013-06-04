@@ -35,6 +35,9 @@ class input
 		$this->container = $container;
 		$this->description = new description( $this );
 		$this->set_attribute( 'name', $name );
+		$id = get_class( $this ) . '_' . $name;
+		$id = str_replace( '\\', '_', $id );
+		$this->set_attribute( 'id', $id );
 		if ( isset( $this->type ) )
 			$this->set_attribute( 'type', $this->type );
 		$this->_construct();
