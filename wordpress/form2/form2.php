@@ -28,8 +28,6 @@ class form
 	{
 		parent::__construct();
 		$this->base = $base;
-		$this->set_attribute( 'action', '' );
-		$this->set_attribute( 'method', 'post' );
 
 		foreach( array(
 			'primary_button',

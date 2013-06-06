@@ -154,6 +154,8 @@ require_once( 'inputs/classes/class.week.php' );
 	Changelog
 	---------
 
+	- 20130606	Hidden inputs no longer have labels. \n
+				Form default action is the current URL and default method is POST.
 	- 20130604	Errors can __tostring() themselves. \n
 				is_posting() automatically calls post(). \n
 				validate_required() has better checking.
@@ -161,7 +163,7 @@ require_once( 'inputs/classes/class.week.php' );
 
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130604
+	@version	20130606
 **/
 class form
 {
@@ -228,6 +230,11 @@ class form
 			$o->class = '\\plainview\\form2\\inputs\\' . $input_type;
 			$this->register_input_type( $o );
 		}
+
+		// action may not be empty
+		$this->set_attribute( 'action', \plainview\base::current_url() );
+		// default method is post
+		$this->set_attribute( 'method', 'post' );
 	}
 
 	/**

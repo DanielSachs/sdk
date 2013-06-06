@@ -23,5 +23,10 @@ class hidden
 	{
 		return $this->hidden( true );
 	}
+
+	public function display_label()
+	{
+		return '';
+	}
 }
 

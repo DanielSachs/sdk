@@ -13,6 +13,7 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130606		form2
 	- 20130604		current_url
 	- 20130530		wordpress tabs.
 	- 20130527		table
@@ -48,7 +49,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130604;
+	protected $sdk_version = 20130606;
 
 	/**
 		@brief		Constructor.

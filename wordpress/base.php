@@ -16,10 +16,11 @@
 
 	@author		Edward Plainview	edward@plainview.se
 	@copyright	GPL v3
-	@version	20130604
+	@version	20130605
 
 	@par	Changelog
 
+	- 20130605				New: yes_no()
 	- 20130604				Code: add_shortcode() has an optional callback parameter.
 	- 20130528				Fix: p() checks for sprintf problems.
 	- 2013-05-07	07:45	New: check_column_* uses a th ID.
@@ -1855,6 +1856,17 @@ class base
 				$text
 			</div>
 		";
+	}
+
+	/**
+		@brief		Return a yes or no string.
+		@param		bool		$bool		Boolean value to convert to a word.
+		@return		string		"Yes" is $bool is true. "No" if false.
+		@since		20130605
+	**/
+	public function yes_no( $bool )
+	{
+		return $bool ? $this->_( 'yes' ) : $this->_( 'no' );
 	}
 }
 
