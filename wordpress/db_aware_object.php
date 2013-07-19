@@ -9,7 +9,7 @@ namespace plainview\wordpress;
 **/
 trait db_aware_object
 {
-	use \plainview\db_aware_object;
+	use \plainview\traits\db_aware_object;
 
 	public function __db_delete()
 	{

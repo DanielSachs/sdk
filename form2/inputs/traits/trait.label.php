@@ -28,6 +28,7 @@ trait label
 
 	/**
 		@brief		Sets the label.
+		@details	In the name of consistence setting the label should be using set_label() instead of this method, but label() is really, really shorthand.
 		@param		string		$label
 		@return		this		Object chaining.
 		@since		20130524
@@ -46,10 +47,10 @@ trait label
 	**/
 	public function labelf( $label )
 	{
-		$this->label = @call_user_func_array( 'sprintf' , func_get_args() );
-		if ( $this->label == '' && $label != '' )
-			$this->label = $label;
-		return $this->label( $label );
+		$labelf = @call_user_func_array( 'sprintf' , func_get_args() );
+		if ( $labelf != '' )
+			$label = $labelf;
+		return $this->set_label( $label );
 	}
 
 	/**
@@ -83,7 +84,7 @@ trait label
 	**/
 	public function set_unfiltered_label( $label )
 	{
-		$this->label = $label;
+		$this->label->content = $label;
 		return $this;
 	}
 
@@ -99,4 +100,3 @@ trait label
 		return $this->set_unfiltered_label( $label );
 	}
 }
-

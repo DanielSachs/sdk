@@ -14,12 +14,13 @@ class description
 	use traits\label;
 
 	public $input;
-	public $label = '';
+	public $label;
 	public $tag = 'div';
 
 	public function __construct( $input )
 	{
 		$this->input = $input;
+		$this->label = new label( $input );
 		$this->container = $this->input->container;
 		$this->css_class( 'description' );
 	}
@@ -33,7 +34,7 @@ class description
 
 	/**
 		@brief		Returns the description's input (owner).
-		@return		description		The description's input.
+		@return		input		The description's input.
 		@since		20130524
 	**/
 	public function input()
@@ -41,4 +42,3 @@ class description
 		return $this->input;
 	}
 }
-

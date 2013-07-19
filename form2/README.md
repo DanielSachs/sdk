@@ -2,7 +2,7 @@ HTML5/XHTML form manipulation class.
 
 Provides form generation, manipulation, _POST handling and validation.
 
-All the form related files are documented, but here is a short taste of what the form class can do.
+All the form related files are documented, but here is a small taste of what the form class can do.
 
 ## Examples
 
@@ -35,7 +35,6 @@ All the form related files are documented, but here is a short taste of what the
 
 	if ( $form->is_posting() )
 	{
-		$form->post();
 		if ( $form->validates() )
 		{
 			echo "Form validates!";
@@ -47,4 +46,3 @@ All the form related files are documented, but here is a short taste of what the
 				echo $error->get_label();
 		}
 	}
-

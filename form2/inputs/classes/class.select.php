@@ -22,6 +22,8 @@ class select
 	public $self_closing = false;
 	public $tag = 'select';
 
+	public $_value = array();
+
 	public function __toString()
 	{
 		return $this->indent() . $this->display_label() . $this->display_input();

@@ -13,6 +13,12 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130719		Unit tests using phpunit. Navigation class. Default wordpress sv language file.
+	- 20130717		add_query_arg and remove_query_arg
+	- 20130716		base::current_url disabled when running CLI.
+	- 20130712		form2 \n
+					wpautop()
+	- 20130702		form2
 	- 20130606		form2
 	- 20130604		current_url
 	- 20130530		wordpress tabs.
@@ -28,12 +34,12 @@ namespace plainview;
 					New: Wordpress CLI.
 	- 20130504		New: string_to_emails() added $mx parameter.
 	- 20130501		array_rekey: force conversion of arrays to arrays (from objects).
-	- 20130430		Added 3rdparty/phpmailer.
+	- 20130430		Added thirdparty/phpmailer.
 	- 20130426		implode_html has switch the parameter order. $array is now first.
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130604
+	@version		20130717
 **/
 class base
 {
@@ -49,7 +55,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130606;
+	protected $sdk_version = 20130719;
 
 	/**
 		@brief		Constructor.
@@ -58,6 +64,23 @@ class base
 	public function __construct()
 	{
 		self::$instance = $this;
+	}
+
+	/**
+		@brief		Builds a URL with parameters.
+		@details
+
+		Taken from Wordpress.
+
+		See documentation for add_query_arg at: http://codex.wordpress.org/Function_Reference/add_query_arg
+
+		@since		20130717
+	**/
+	public static function add_query_arg()
+	{
+		if ( ! function_exists( '\\plainview\\thirdparty\\wordpress\\add_query_arg' ) )
+			require_once( __DIR__ . '/thirdparty/wordpress/functions.php' );
+		return call_user_func_array( '\\plainview\\thirdparty\\wordpress\\add_query_arg', func_get_args() );
 	}
 
 	/**
@@ -162,6 +185,10 @@ class base
 	{
 		if ( $SERVER === null )
 			$SERVER = $_SERVER;
+
+		// Unable to current_url if we're running as a CLI.
+		if ( ! isset( $SERVER[ 'SERVER_PORT' ] ) )
+			return '';
 
 		$ssl = ( $SERVER[ 'SSL_PROTOCOL' ] != '' );
 
@@ -393,6 +420,23 @@ class base
 	}
 
 	/**
+		@brief		Remove a query argument from a url.
+		@details
+
+		Taken from Wordpress.
+
+		See documentation for remove_query_arg at: http://codex.wordpress.org/Function_Reference/remove_query_arg
+
+		@since		20130717
+	**/
+	public static function remove_query_arg()
+	{
+		if ( ! function_exists( '\\plainview\\thirdparty\\thirdparty\wordpress\\remove_query_arg' ) )
+			require_once( __DIR__ . '/thirdparty/wordpress/functions.php' );
+		return call_user_func_array( '\\plainview\\thirdparty\\wordpress\\remove_query_arg', func_get_args() );
+	}
+
+	/**
 		@brief		Recursively removes a directory.
 		@details	Assumes that all files in the directory, and the dir itself, are writeable.
 		@param		string		$directory		Directory to remove.
@@ -533,5 +577,87 @@ class base
 			$r .= self::hash( microtime() . rand( 0, PHP_INT_MAX ) );
 		return substr( $r, 0, $length );
 	}
-}
 
+	/**
+	 	@brief		Replaces double line-breaks with paragraph elements.
+	 	@details	Taken from the Wordpress wpautop() function.
+	 	@param		string		$pee		The text which has to be formatted.
+	 	@param		bool		$br			Optional. If set, this will convert all remaining line-breaks after paragraphing. Default true.
+	 	@return		string		Text which has been converted into correct paragraph tags.
+	 	@since		20130712
+	**/
+	public static function wpautop($pee, $br = true) {
+		$pre_tags = array();
+
+		if ( trim($pee) === '' )
+			return '';
+
+		$pee = $pee . "\n"; // just to make things a little easier, pad the end
+
+		if ( strpos($pee, '<pre') !== false ) {
+			$pee_parts = explode( '</pre>', $pee );
+			$last_pee = array_pop($pee_parts);
+			$pee = '';
+			$i = 0;
+
+			foreach ( $pee_parts as $pee_part ) {
+				$start = strpos($pee_part, '<pre');
+
+				// Malformed html?
+				if ( $start === false ) {
+					$pee .= $pee_part;
+					continue;
+				}
+
+				$name = "<pre wp-pre-tag-$i></pre>";
+				$pre_tags[$name] = substr( $pee_part, $start ) . '</pre>';
+
+				$pee .= substr( $pee_part, 0, $start ) . $name;
+				$i++;
+			}
+
+			$pee .= $last_pee;
+		}
+
+		$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
+		// Space things out a little
+		$allblocks = '(?:table|thead|tfoot|caption|col|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|option|form|map|area|blockquote|address|math|style|p|h[1-6]|hr|fieldset|noscript|samp|legend|section|article|aside|hgroup|header|footer|nav|figure|figcaption|details|menu|summary)';
+		$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
+		$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
+		$pee = str_replace(array("\r\n", "\r"), "\n", $pee); // cross-platform newlines
+		if ( strpos($pee, '<object') !== false ) {
+			$pee = preg_replace('|\s*<param([^>]*)>\s*|', "<param$1>", $pee); // no pee inside object/embed
+			$pee = preg_replace('|\s*</embed>\s*|', '</embed>', $pee);
+		}
+		$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
+		// make paragraphs, including one at the end
+		$pees = preg_split('/\n\s*\n/', $pee, -1, PREG_SPLIT_NO_EMPTY);
+		$pee = '';
+		foreach ( $pees as $tinkle )
+			$pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
+		$pee = preg_replace('|<p>\s*</p>|', '', $pee); // under certain strange conditions it could create a P of entirely whitespace
+		$pee = preg_replace('!<p>([^<]+)</(div|address|form)>!', "<p>$1</p></$2>", $pee);
+		$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); // don't pee all over a tag
+		$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee); // problem with nested lists
+		$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
+		$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
+		$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
+		$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
+		if ( $br ) {
+			$pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', function( $matches )
+				{
+					return str_replace("\n", "<WPPreserveNewline />", $matches[0]);
+				}, $pee);
+			$pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee); // optionally make line breaks
+			$pee = str_replace('<WPPreserveNewline />', "\n", $pee);
+		}
+		$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee);
+		$pee = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee);
+		$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
+
+		if ( !empty($pre_tags) )
+			$pee = str_replace(array_keys($pre_tags), array_values($pre_tags), $pee);
+
+		return $pee;
+	}
+}

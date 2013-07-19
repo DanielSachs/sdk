@@ -148,12 +148,19 @@ trait options
 			$o->name = $name;
 			$o->value = $option_value;
 			$input = $this->new_option( $o );
-			$input->disabled( $this->is_disabled() );
 			$input->check( $option->is_checked() );
-			$input->set_label( $option->get_label() );
+			$input->disabled( $this->is_disabled() );
+			if ( $this->is_required() )
+				$input->required();
+
+			$input->label = $option->get_label();
+			// Point the label to the new input.
+			$input->label->set_input( $input );
+
 			$input->prefix = $this->prefix;
+
 			// Divs to make them separate lines.
-			$r .= $this->indent() . '<div>' . $input->display_input() . ' ' . $input->display_label() . "</div>\n";
+			$r .= $this->indent() . '<div>' . $input->display_input() . ' ' . $input->label . "</div>\n";
 		}
 		return $r;
 	}

@@ -9,4 +9,3 @@ class form
 	extends \plainview\form
 {
 }
-

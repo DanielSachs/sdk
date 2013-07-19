@@ -18,6 +18,14 @@ namespace plainview\form2\inputs\traits;
 trait validation
 {
 	/**
+		@brief		Has this input been validated?
+		@see		validate()
+		@var		$has_validated
+		@since		20130718
+	**/
+	public $has_validated = false;
+
+	/**
 		@brief		An array of validation errors this input has acquired during validation.
 		@see		get_validation_errors()
 		@see		validate()
@@ -82,6 +90,17 @@ trait validation
 	}
 
 	/**
+		@brief		Returns if the object has been validated.
+		@return		bool		True, if the object has been validated.
+		@see		validate()
+		@since		20130718
+	**/
+	public function has_validated()
+	{
+		return $this->has_validated;
+	}
+
+	/**
 		@brief		Returns whether this input requires validation of any kind.
 		@return		bool		True if the input requires any sort of validation.
 		@since		20130524
@@ -112,6 +131,7 @@ trait validation
 	**/
 	public function validate()
 	{
+		$this->has_validated = true;
 		$this->validation_value = $this->get_post_value();
 
 		// The required attribute requires special treatment because the HTML element itself has a required() global attribute setter.
@@ -143,7 +163,7 @@ trait validation
 			$error = $check_value === null;
 
 		if ( $error )
-			$this->validation_error()->set_unfiltered_label_( 'Please fill in %s.', '<em>' . $this->label . '</em>' );
+			$this->validation_error()->set_unfiltered_label_( 'Please fill in %s.', '<em>' . $this->get_label()->content . '</em>' );
 	}
 
 	/**
@@ -153,7 +173,8 @@ trait validation
 	**/
 	public function validates()
 	{
+		if ( ! $this->has_validated() )
+			$this->validate();
 		return count( $this->validation_errors ) < 1;
 	}
 }
-

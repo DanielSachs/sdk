@@ -13,7 +13,6 @@ class radio
 	extends option
 {
 	use traits\checked;
-	use traits\value;
 
 	public $self_closing = true;
 	public $tag = 'input';

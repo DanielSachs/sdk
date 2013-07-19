@@ -22,7 +22,7 @@ class email
 	{
 		$value = $this->get_value();
 		if ( ! \plainview\base::is_email( $value ) )
-			$this->validation_error()->set_unfiltered_label_( 'The e-mail address in %s is not valid!', '<em>' . $this->get_label() . '</em>' );
+			$this->validation_error()->set_unfiltered_label_( 'The e-mail address in %s is not valid!', '<em>' . $this->get_label()->content . '</em>' );
 	}
 }
 

@@ -11,7 +11,6 @@ namespace plainview\form2\inputs;
 class select_option
 	extends option
 {
-	use traits\value;
 	use traits\selected;
 
 	public function check( $checked = true )

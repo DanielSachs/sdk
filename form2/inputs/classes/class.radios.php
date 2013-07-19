@@ -21,6 +21,11 @@ class radios
 	public $self_closing = false;
 	public $tag = 'div';
 
+	public function _construct()
+	{
+		$this->css_class( 'radios' );
+	}
+
 	/**
 		@brief		No global label.
 		@return		string		The radios label as a normal string.
@@ -37,7 +42,8 @@ class radios
 
 	public function new_option( $o )
 	{
-		$input = new radio( $o->container, $o->container->get_attribute( 'name' ) );
+		$name = ( isset( $o->id ) ? $o->id : $o->name );
+		$input = new radio( $o->container, $name );
 		$input->set_attribute( 'name', $o->name );
 		$input->set_attribute( 'value', $o->value );
 		return $input;

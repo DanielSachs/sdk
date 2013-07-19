@@ -93,15 +93,6 @@
 
 namespace plainview\wordpress;
 
-if ( ! class_exists( '\\plainview\\base' ) )
-	require_once( dirname( __FILE__ ) . '/../sdk.php' );
-
-if ( ! trait_exists( '\\plainview\\wordpress\\db_aware_object' ) )
-	require_once( dirname( __FILE__ ) . '/db_aware_object.php' );
-
-if ( class_exists( '\\plainview\\wordpress\\base' ) )
-	return;
-
 class base
 	extends \plainview\base
 {
@@ -1461,12 +1452,6 @@ class base
 	**/
 	public function form2()
 	{
-		if ( ! class_exists( '\\plainview\\form2\\form' ) )
-			require_once( dirname( __FILE__ ) . '/../form2/form.php' );
-
-		if ( ! class_exists( '\\plainview\\wordpress\\form2\\form' ) )
-			require_once( 'form2/form2.php' );
-
 		$form = new \plainview\wordpress\form2\form( $this );
 		return $form;
 	}
@@ -1696,9 +1681,6 @@ class base
 	**/
 	public function table()
 	{
-		if ( ! class_exists( '\\plainview\\wordpress\\table' ) )
-			require_once( 'table.php' );
-
 		$table = new \plainview\wordpress\table\table( $this );
 		$table->css_class( 'widefat' );
 		return $table;
@@ -1714,9 +1696,6 @@ class base
 	{
 		if ( count( $options ) == 0 )
 		{
-			if ( ! class_exists( '\\plainview\\wordpress\\tabs\\tabs' ) )
-				require_once( 'tabs.php' );
-
 			$tabs = new \plainview\wordpress\tabs\tabs( $this );
 			return $tabs;
 		}

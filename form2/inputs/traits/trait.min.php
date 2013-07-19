@@ -22,15 +22,15 @@ trait min
 		$this->add_validation_method( 'min' );
 		if ( $max !== null )
 			$this->max( $max );
-		return $this->set_attribute( 'min', intval( $min ) );
+		return $this->set_attribute( 'min', floatval( $min ) );
 	}
 
 	public function validate_min()
 	{
-		$value = intval( $this->validation_value );
+		$value = floatval( $this->validation_value );
 		$min = $this->get_attribute( 'min' );
 		if ( $value < $min )
-			$this->validation_error()->set_unfiltered_label_( 'The value in %s (%s) is smaller than the allowed minimum of %s.', '<em>' . $this->get_label() . '</em>', $value, $min );
+			$this->validation_error()->set_unfiltered_label_( 'The value in %s (%s) is smaller than the allowed minimum of %s.', '<em>' . $this->get_label()->content . '</em>', $value, $min );
 	}
 }
 

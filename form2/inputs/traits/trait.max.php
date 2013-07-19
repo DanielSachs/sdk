@@ -22,15 +22,15 @@ trait max
 		if ( $min !== null )
 			$this->min( $min );
 		$this->add_validation_method( 'max' );
-		return $this->set_attribute( 'max', intval( $max ) );
+		return $this->set_attribute( 'max', floatval( $max ) );
 	}
 
 	public function validate_max()
 	{
-		$value = intval( $this->validation_value );
+		$value = floatval( $this->validation_value );
 		$max = $this->get_attribute( 'max' );
 		if ( $value > $max )
-			$this->validation_error()->set_unfiltered_label_( 'The value in %s (%s) is larger than the allowed maximum of %s.', '<em>' . $this->get_label() . '</em>', $value, $max );
+			$this->validation_error()->set_unfiltered_label_( 'The value in %s (%s) is larger than the allowed maximum of %s.', '<em>' . $this->get_label()->content . '</em>', $value, $max );
 	}
 }
 

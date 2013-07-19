@@ -14,6 +14,9 @@ class hidden
 {
 	use traits\value;
 
+	public $has_description = false;
+	public $has_label = false;
+
 	public $type = 'hidden';
 
 	/**

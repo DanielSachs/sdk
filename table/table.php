@@ -2,7 +2,7 @@
 
 namespace plainview\table;
 
-require_once( 'table_element.php' );
+require_once( __DIR__ . '/table_element.php' );
 
 /**
 	@brief		Plainview XHTML table class.

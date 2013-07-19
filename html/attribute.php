@@ -2,6 +2,8 @@
 
 namespace plainview\html;
 
+use plainview\html\exceptions\InvalidKeyException;
+
 /**
 	@brief		Attribute handling class.
 	@details	Used to more easily manipulate attributes with appendable values (css class, style).
@@ -12,7 +14,7 @@ namespace plainview\html;
 	- 20130506	Initial version.
 
 	@since		20130506
-	@version	20130514
+	@version	20130718
 **/
 class attribute
 {
@@ -40,6 +42,8 @@ class attribute
 
 	public function __construct( $key )
 	{
+		if ( ! self::is_key_valid( $key ) )
+			throw new InvalidKeyException( "Invalid key: $key" );
 		$this->key = $key;
 		$this->clear();
 	}
@@ -65,6 +69,19 @@ class attribute
 	{
 		$this->value = array();
 		return $this;
+	}
+
+	/**
+		@brief		Check that a key is valid.
+		@param		string		$key		Key to check for validity.
+		@return		boolean True if the key is valid.
+		@since		20130718
+	**/
+	public static function is_key_valid( $key )
+	{
+		if ( strpos( $key, ' ' ) !== false )
+			return false;
+		return true;
 	}
 
 	/**

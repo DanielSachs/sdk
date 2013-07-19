@@ -143,7 +143,7 @@ trait container
 		@return		hidden		The newly-created hidden input.
 		@since		20130524
 	**/
-	public function hidden( $name )
+	public function hidden_input( $name )
 	{
 		return $this->input( $name, 'hidden' );
 	}

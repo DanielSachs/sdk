@@ -19,7 +19,7 @@ class select_optgroup
 	public function __toString()
 	{
 		$optgroup = clone( $this );
-		$optgroup->set_attribute( 'label', $this->label );
+		$optgroup->set_attribute( 'label', $this->get_label()->content );
 		$optgroup->clear_attribute( 'name' );
 		return $optgroup->open_tag() . "\n" . $optgroup->display_input() . $optgroup->close_tag() . "\n";
 	}

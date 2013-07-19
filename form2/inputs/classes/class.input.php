@@ -22,7 +22,10 @@ class input
 
 	public $description = '';
 
-	public $label = '';
+	public $has_description = true;
+	public $has_label = true;
+
+	public $label;
 
 	public $prefix = array();
 
@@ -33,11 +36,14 @@ class input
 	public function __construct( $container, $name )
 	{
 		$this->container = $container;
-		$this->description = new description( $this );
+		if ( $this->has_description )
+			$this->description = new description( $this );
 		$this->set_attribute( 'name', $name );
 		$id = get_class( $this ) . '_' . $name;
 		$id = str_replace( '\\', '_', $id );
 		$this->set_attribute( 'id', $id );
+		if ( $this->has_label )
+			$this->label = new label( $this );
 		if ( isset( $this->type ) )
 			$this->set_attribute( 'type', $this->type );
 		$this->_construct();
@@ -217,15 +223,7 @@ class input
 	**/
 	public function display_label()
 	{
-		$input = clone $this;
-		$input->set_attribute( 'id', $input->make_id() );
-		$input->set_attribute( 'name', $input->make_name() );
-
-		return sprintf(
-			'<label for="%s">%s</label>',
-			$input->make_id(),
-			$input->get_label()
-		);
+		return $this->get_label();
 	}
 
 	/**
@@ -236,6 +234,16 @@ class input
 	public function form()
 	{
 		return $this->container->form();
+	}
+
+	/**
+		@brief		Does this input have any prefixes set?
+		@return		bool		True if the input has prefixes.
+		@since		20130718
+	**/
+	public function has_prefix()
+	{
+		return count( $this->prefix ) > 0;
 	}
 
 	public function indentation()

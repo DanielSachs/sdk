@@ -8,6 +8,7 @@ namespace plainview\html;
 
 	@par		Changelog
 
+	- 20130702	content() added. toString() added.
 	- 20130604	required() sets aria-required attribute also.
 	- 20130524	New: get_boolean_attribute, set_boolean_attribute()
 	- 20130514	New: clear_attributes()
@@ -16,7 +17,7 @@ namespace plainview\html;
 	- 20130506	First version.
 
 	@since		20130506
-	@version	20130604
+	@version	20130702
 **/
 trait element
 {
@@ -30,6 +31,13 @@ trait element
 	public $attributes = array();
 
 	/**
+		@brief		Content between the tags, if any.
+		@var		$content
+		@since		20130702
+	**/
+	public $content = '';
+
+	/**
 		@brief		Clones the attributes array.
 		@since		20130510
 	**/
@@ -39,6 +47,20 @@ trait element
 		foreach( $this->attributes as $key => $attribute )
 			$new_attributes[ $key ] = clone $attribute;
 		$this->attributes = $new_attributes;
+	}
+
+	/**
+		@brief		Converts the element to a string.
+		@details	If the element is not self-closing, the content, if any, will be outputted between the tags.
+		@return		string		This element as a string.
+		@since		20130702
+	**/
+	public function toString()
+	{
+		if ( $this->self_closing() )
+			return $this->open_tag();
+		else
+			return $this->open_tag() . $this->content . $this->close_tag();
 	}
 
 	/**
@@ -109,6 +131,18 @@ trait element
 	}
 
 	/**
+		@brief		Set the content of this element.
+		@param		string		$content		Content to set.
+		@return		$this						Object chaining.
+		@since		20130703
+	**/
+	public function content( $content )
+	{
+		$this->content = $content;
+		return $this;
+	}
+
+	/**
 		@brief		Convenience function to add another CSS class to this element.
 		@param		string		$css_class		A CSS class or classes to append to the element.
 		@return		$this						Object chaining.
@@ -139,6 +173,19 @@ trait element
 	}
 
 	/**
+		@brief		Returns the value of an attribute.
+		@param		string		$type			Type of attribute to retrieve.
+		@return		mixed						Null, if the attribute does not exist, or the attribute value.
+		@since		20130509
+	**/
+	public function get_attribute( $type )
+	{
+		if ( ! isset( $this->attributes[ $type ] ) )
+			return null;
+		return $this->attributes[ $type ]->value();
+	}
+
+	/**
 		@brief		Return if an attribute is true.
 		@param		string		$attribute		The name of the attribute to query.
 		@return		bool		True, if the attribute is set to true.
@@ -151,16 +198,13 @@ trait element
 	}
 
 	/**
-		@brief		Returns the value of an attribute.
-		@param		string		$type			Type of attribute to retrieve.
-		@return		mixed						Null, if the attribute does not exist, or the attribute value.
-		@since		20130509
+		@brief		Return the content.
+		@return		string		The content.
+		@since		20130703
 	**/
-	public function get_attribute( $type )
+	public function get_content()
 	{
-		if ( ! isset( $this->attributes[ $type ] ) )
-			return null;
-		return $this->attributes[ $type ]->value();
+		return $this->content;
 	}
 
 	/**
@@ -387,15 +431,3 @@ trait attributes
 		return $this->set_attribute( 'translate', $translate );
 	}
 }
-
-/**
-	@brief		A simple DIV element.
-	@details	Exists to allow inline creation of a temp element.
-**/
-class div
-{
-	use element;
-
-	public $tag = 'div';
-}
-

@@ -9,11 +9,43 @@ namespace plainview\form2\inputs\traits;
 	If you wish to retrieve the value, run a \plainview\form2\form::unfilter_text() on it to return it to its original status.
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130524
+	@version	20130712
 **/
 trait value
 {
 	public $value;
+	public $value_filters = [];
+
+	/**
+		@brief		Adds a value filter.
+		@details	Value filters are functions that filter the value before setting it.
+		@param		string		$name		Brief name of the filter function.
+		@param		closure		$function	Function that takes the value and returns it filtered.
+		@return		$this		Method chaining.
+		@see		apply_value_filters()
+		@see		remove_value_filter()
+		@since		20130712
+	**/
+	public function add_value_filter( $name, $function )
+	{
+		$this->value_filters[ $name ] = $function;
+		return $this;
+	}
+
+	/**
+		@brief		Apply all value filters on this value.
+		@param		string		$value		Value to filter.
+		@return		string		The filtered value.
+		@see		add_value_filter()
+		@see		remove_value_filter()
+		@since		20130712
+	**/
+	public function apply_value_filters( $value )
+	{
+		foreach( $this->value_filters as $value_filter )
+			$value = call_user_func( $value_filter, $value );
+		return $value;
+	}
 
 	/**
 		@brief		Exists solely to be overriden by those inputs that have the value in between their tags.
@@ -37,6 +69,7 @@ trait value
 		$value = $this->form()->get_post_value( $this->make_name() );
 		if ( $value !== null )
 			$value = stripslashes( $value );
+		$value = $this->apply_value_filters( $value );
 		return $value;
 	}
 
@@ -54,15 +87,30 @@ trait value
 	}
 
 	/**
-		@brief		Convenience function for setting the value.
-		@param		string		The new value to filter and set.
-		@see		get_value()
-		@see		set_value()
-		@since		20130524
+		@brief		Removes a value filter.
+		@param		string		$name		Brief name of the filter function.
+		@see		add_value_filter()
+		@see		apply_value_filters()
+		@since		20130712
 	**/
-	public function value( $value )
+	public function remove_value_filter( $name )
 	{
-		return $this->set_value( $value );
+		if ( isset( $this->value_filters[ $name ] ) )
+			unset( $this->value_filters[ $name ] );
+		return $this;
+	}
+
+	/**
+		@brief		Sets the post value of this input.
+		@return		this		Method chaining.
+		@see		use_post_value()
+		@since		20130712
+	**/
+	public function set_post_value( $value )
+	{
+		$value = $this->apply_value_filters( $value );
+		$this->form()->set_post_value( $this->make_name(), $value );
+		return $this;
 	}
 
 	/**
@@ -75,6 +123,7 @@ trait value
 	**/
 	public function set_value( $value )
 	{
+		$value = $this->apply_value_filters( $value );
 		$value = \plainview\form2\form::filter_text( $value );
 		$this->set_attribute( 'value', $value );
 		return $this;
@@ -90,9 +139,21 @@ trait value
 	public function use_post_value()
 	{
 		$value = $this->get_post_value();
+		$value = $this->apply_value_filters( $value );
 		$this->value( $value );
 		return $this;
 	}
 
+	/**
+		@brief		Convenience function for setting the value.
+		@param		string		The new value to filter and set.
+		@see		get_value()
+		@see		set_value()
+		@since		20130524
+	**/
+	public function value( $value )
+	{
+		$value = $this->apply_value_filters( $value );
+		return $this->set_value( $value );
+	}
 }
-

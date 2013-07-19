@@ -2,65 +2,66 @@
 
 namespace plainview\form2;
 
-require_once( 'inputs/traits/trait.autocomplete.php' );
-require_once( 'inputs/traits/trait.checked.php' );
-require_once( 'inputs/traits/trait.container.php' );
-require_once( 'inputs/traits/trait.disabled.php' );
-require_once( 'inputs/traits/trait.high.php' );
-require_once( 'inputs/traits/trait.label.php' );
-require_once( 'inputs/traits/trait.list.php' );
-require_once( 'inputs/traits/trait.low.php' );
-require_once( 'inputs/traits/trait.max.php' );
-require_once( 'inputs/traits/trait.maxlength.php' );
-require_once( 'inputs/traits/trait.min.php' );
-require_once( 'inputs/traits/trait.minlength.php' );
-require_once( 'inputs/traits/trait.optimum.php' );
-require_once( 'inputs/traits/trait.options.php' );
-require_once( 'inputs/traits/trait.placeholder.php' );
-require_once( 'inputs/traits/trait.readonly.php' );
-require_once( 'inputs/traits/trait.selected.php' );
-require_once( 'inputs/traits/trait.size.php' );
-require_once( 'inputs/traits/trait.step.php' );
-require_once( 'inputs/traits/trait.validation.php' );
-require_once( 'inputs/traits/trait.value.php' );
+require_once( __DIR__ . '/inputs/traits/trait.autocomplete.php' );
+require_once( __DIR__ . '/inputs/traits/trait.checked.php' );
+require_once( __DIR__ . '/inputs/traits/trait.container.php' );
+require_once( __DIR__ . '/inputs/traits/trait.disabled.php' );
+require_once( __DIR__ . '/inputs/traits/trait.high.php' );
+require_once( __DIR__ . '/inputs/traits/trait.label.php' );
+require_once( __DIR__ . '/inputs/traits/trait.list.php' );
+require_once( __DIR__ . '/inputs/traits/trait.low.php' );
+require_once( __DIR__ . '/inputs/traits/trait.max.php' );
+require_once( __DIR__ . '/inputs/traits/trait.maxlength.php' );
+require_once( __DIR__ . '/inputs/traits/trait.min.php' );
+require_once( __DIR__ . '/inputs/traits/trait.minlength.php' );
+require_once( __DIR__ . '/inputs/traits/trait.optimum.php' );
+require_once( __DIR__ . '/inputs/traits/trait.options.php' );
+require_once( __DIR__ . '/inputs/traits/trait.placeholder.php' );
+require_once( __DIR__ . '/inputs/traits/trait.readonly.php' );
+require_once( __DIR__ . '/inputs/traits/trait.selected.php' );
+require_once( __DIR__ . '/inputs/traits/trait.size.php' );
+require_once( __DIR__ . '/inputs/traits/trait.step.php' );
+require_once( __DIR__ . '/inputs/traits/trait.validation.php' );
+require_once( __DIR__ . '/inputs/traits/trait.value.php' );
 
-require_once( 'inputs/classes/class.input.php' );
-require_once( 'inputs/classes/class.option.php' );
-require_once( 'inputs/classes/class.text.php' );
-require_once( 'inputs/classes/class.number.php' );
-require_once( 'inputs/classes/class.select_optgroup.php' );
+require_once( __DIR__ . '/inputs/classes/class.input.php' );
+require_once( __DIR__ . '/inputs/classes/class.option.php' );
+require_once( __DIR__ . '/inputs/classes/class.text.php' );
+require_once( __DIR__ . '/inputs/classes/class.number.php' );
+require_once( __DIR__ . '/inputs/classes/class.select_optgroup.php' );
 
-require_once( 'validation/class.error.php' );
+require_once( __DIR__ . '/validation/class.error.php' );
 
-require_once( 'inputs/classes/class.button.php' );
-require_once( 'inputs/classes/class.checkbox.php' );
-require_once( 'inputs/classes/class.checkboxes.php' );
-require_once( 'inputs/classes/class.datalist.php' );
-require_once( 'inputs/classes/class.datalist_option.php' );
-require_once( 'inputs/classes/class.date.php' );
-require_once( 'inputs/classes/class.datetime.php' );
-require_once( 'inputs/classes/class.datetime_local.php' );
-require_once( 'inputs/classes/class.description.php' );
-require_once( 'inputs/classes/class.email.php' );
-require_once( 'inputs/classes/class.fieldset.php' );
-require_once( 'inputs/classes/class.hidden.php' );
-require_once( 'inputs/classes/class.legend.php' );
-require_once( 'inputs/classes/class.markup.php' );
-require_once( 'inputs/classes/class.meter.php' );
-require_once( 'inputs/classes/class.month.php' );
-require_once( 'inputs/classes/class.password.php' );
-require_once( 'inputs/classes/class.radio.php' );
-require_once( 'inputs/classes/class.radios.php' );
-require_once( 'inputs/classes/class.range.php' );
-require_once( 'inputs/classes/class.search.php' );
-require_once( 'inputs/classes/class.select.php' );
-require_once( 'inputs/classes/class.select_option.php' );
-require_once( 'inputs/classes/class.submit.php' );
-require_once( 'inputs/classes/class.tel.php' );
-require_once( 'inputs/classes/class.time.php' );
-require_once( 'inputs/classes/class.textarea.php' );
-require_once( 'inputs/classes/class.url.php' );
-require_once( 'inputs/classes/class.week.php' );
+require_once( __DIR__ . '/inputs/classes/class.button.php' );
+require_once( __DIR__ . '/inputs/classes/class.checkbox.php' );
+require_once( __DIR__ . '/inputs/classes/class.checkboxes.php' );
+require_once( __DIR__ . '/inputs/classes/class.datalist.php' );
+require_once( __DIR__ . '/inputs/classes/class.datalist_option.php' );
+require_once( __DIR__ . '/inputs/classes/class.date.php' );
+require_once( __DIR__ . '/inputs/classes/class.datetime.php' );
+require_once( __DIR__ . '/inputs/classes/class.datetime_local.php' );
+require_once( __DIR__ . '/inputs/classes/class.description.php' );
+require_once( __DIR__ . '/inputs/classes/class.email.php' );
+require_once( __DIR__ . '/inputs/classes/class.fieldset.php' );
+require_once( __DIR__ . '/inputs/classes/class.hidden.php' );
+require_once( __DIR__ . '/inputs/classes/class.legend.php' );
+require_once( __DIR__ . '/inputs/classes/class.label.php' );
+require_once( __DIR__ . '/inputs/classes/class.markup.php' );
+require_once( __DIR__ . '/inputs/classes/class.meter.php' );
+require_once( __DIR__ . '/inputs/classes/class.month.php' );
+require_once( __DIR__ . '/inputs/classes/class.password.php' );
+require_once( __DIR__ . '/inputs/classes/class.radio.php' );
+require_once( __DIR__ . '/inputs/classes/class.radios.php' );
+require_once( __DIR__ . '/inputs/classes/class.range.php' );
+require_once( __DIR__ . '/inputs/classes/class.search.php' );
+require_once( __DIR__ . '/inputs/classes/class.select.php' );
+require_once( __DIR__ . '/inputs/classes/class.select_option.php' );
+require_once( __DIR__ . '/inputs/classes/class.submit.php' );
+require_once( __DIR__ . '/inputs/classes/class.tel.php' );
+require_once( __DIR__ . '/inputs/classes/class.time.php' );
+require_once( __DIR__ . '/inputs/classes/class.textarea.php' );
+require_once( __DIR__ . '/inputs/classes/class.url.php' );
+require_once( __DIR__ . '/inputs/classes/class.week.php' );
 
 /**
 	@brief		HTML5/XHTML form manipulation class.
@@ -154,6 +155,12 @@ require_once( 'inputs/classes/class.week.php' );
 	Changelog
 	---------
 
+	- 20130718	Added unit testing. Just run phpunit in this directory. \
+				validates() automatically runs validate() if necessary. \n
+				set_post_value().
+	- 20130701	Hidden input is created using hidden_input(). \n
+				Duplicate traits removed from inputs. \n
+				Text now allows for minlength.
 	- 20130606	Hidden inputs no longer have labels. \n
 				Form default action is the current URL and default method is POST.
 	- 20130604	Errors can __tostring() themselves. \n
@@ -168,11 +175,7 @@ require_once( 'inputs/classes/class.week.php' );
 class form
 {
 	use \plainview\html\element;
-	use inputs\traits\container
-	{
-		// There is an input of type hidden, instead of the HTML element assigning itself the hidden attribute.
-		inputs\traits\container::hidden insteadof \plainview\html\element;
-	}
+	use inputs\traits\container;
 
 	/**
 		@brief		Array of objects containing information about the available input types.
@@ -240,12 +243,25 @@ class form
 	/**
 		@brief		Provide subclasses a chance to translate strings.
 		@param		string		$string		String to translate.
-		@return		string		The translated, or unstranslated, string.
+		@return		string		The translated, or untranslated, string.
 		@since		20130524
 	**/
 	public function _(  $string )
 	{
 		return $string;
+	}
+
+	/**
+		@brief		Set the action of this form.
+		@param		string		$action		Any string.
+		@return		this		Object chaining.
+		@see		action()
+		@see		enctype()
+		@since		20130712
+	**/
+	public function action( $action )
+	{
+		return $this->set_attribute( 'action', $action );
 	}
 
 	/**
@@ -327,6 +343,7 @@ class form
 
 		@param		string		$name		The name of the input to fetch.
 		@see		post()
+		@see		set_post_value()
 		@since		20130524
 	**/
 	public function get_post_value( $name )
@@ -462,6 +479,43 @@ class form
 	public function register_input_type( $o )
 	{
 		$this->input_types[ $o->name ] = $o;
+		return $this;
+	}
+
+	/**
+		@brief		Set the POST value for an input name.
+		@param		string		$name		The name of the input to set.
+		@param		string		$value		The new value to set.
+		@see		post()
+		@see		get_post_value()
+		@since		20130712
+	**/
+	public function set_post_value( $name, $value )
+	{
+		// No prefix?
+		if ( strpos( $name, '['  ) === false )
+		{
+			$this->post[ $name ] = $value;
+		}
+		else
+		{
+			// Prepare to split the name up into arrays.
+			$name = preg_replace( '/\[/', '][', $name, 1 );
+			$name = rtrim( $name, ']' );
+			$names = explode( '][', $name );
+
+			$post = &$this->post;
+			while( count( $names ) > 0 )
+			{
+				$name = array_shift( $names );
+				if ( count( $names ) == 0 )
+					break;
+				if ( ! isset( $post[ $name ] ) )
+					$post[ $name ] = [];
+				$post = &$post[ $name ];
+			}
+			$post[ $name ] = $value;
+		}
 		return $this;
 	}
 
