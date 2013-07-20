@@ -30,7 +30,9 @@ Requirements
 Standalone usage
 ----------------
 
-Require the classes.
+Require the autoloader.
+
+	require_once( 'plainview/autoload/vendor/autoload.php' );
 
 The SDK's function can now be accessed statically:
 

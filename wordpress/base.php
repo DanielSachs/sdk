@@ -196,7 +196,6 @@ class base
 	**/
 	public function __construct( $filename = null )
 	{
-
 		if ( ! defined( 'ABSPATH' ) )
 		{
 			// Was this run from the command line?
