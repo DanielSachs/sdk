@@ -13,6 +13,11 @@
     },
     "autoload":
     {
+    	"files":
+    	[
+    		"../traits/db_aware_object.php",
+    		"../wordpress/db_aware_object.php"
+    	],
         "psr-0":
        {
        	   "plainview" : "../../"
