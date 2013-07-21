@@ -30,11 +30,13 @@ Requirements
 Standalone usage
 ----------------
 
-Require the autoloader.
+Copy the files into a directory called plainview.
 
-	require_once( 'plainview/autoload/vendor/autoload.php' );
+Require the autoloader. Assuming you have the SDK in a subdirectory called "plainview" (it must be called plainview but can be placed anywhere):
 
-The SDK's function can now be accessed statically:
+	require_once( 'plainview//autoload.php' );
+
+After that the classes are loaded automatically. The SDK's function can now be accessed statically:
 
 	if ( \plainview\base::is_email( 'test@test.com' ) )
 		echo 'Valid e-mail address!';
