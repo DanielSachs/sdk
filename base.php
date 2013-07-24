@@ -13,6 +13,8 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130723		form2, instance() fixed, is_email checks for empty, mail bcc, wordpress\\traits\\foundation.
+	- 20130722		wordpress\\base
 	- 20130719		Unit tests using phpunit. Navigation class. Default wordpress sv language file.
 	- 20130717		add_query_arg and remove_query_arg
 	- 20130716		base::current_url disabled when running CLI.
@@ -39,7 +41,7 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130717
+	@version		20130723
 **/
 class base
 {
@@ -48,14 +50,14 @@ class base
 		@since		20130425
 		@var		$instance
 	**/
-	protected static $instance;
+	protected static $instance = [];
 
 	/**
 		@brief		The version of this SDK file.
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130719;
+	protected $sdk_version = 20130723;
 
 	/**
 		@brief		Constructor.
@@ -63,7 +65,8 @@ class base
 	**/
 	public function __construct()
 	{
-		self::$instance = $this;
+		$classname = get_class( $this );
+		self::$instance[ $classname ] = $this;
 	}
 
 	/**
@@ -297,7 +300,8 @@ class base
 	**/
 	public static function instance()
 	{
-		return self::$instance;
+		$classname = get_called_class();
+		return self::$instance[ $classname ];
 	}
 
 	/**
@@ -309,6 +313,9 @@ class base
 	**/
 	public static function is_email( $address, $check_mx = true )
 	{
+		if ( $address == '' )
+			return false;
+
 		if ( filter_var( $address, FILTER_VALIDATE_EMAIL ) != $address )
 			return false;
 
@@ -331,9 +338,6 @@ class base
 	**/
 	public static function mail()
 	{
-		if ( ! class_exists( '\\plainview\\mail' ) )
-			require_once( dirname( __FILE__ ) . '/mail.php' );
-
 		$mail = new \plainview\mail\mail();
 		$mail->CharSet = 'UTF-8';
 		return $mail;

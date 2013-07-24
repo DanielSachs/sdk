@@ -11,7 +11,7 @@ if ( ! function_exists( 'ddd' ) )
 		$r = array();
 		$args = func_get_args();
 		foreach( $args as $arg )
-			$r[] = trim( htmlspecialchars( var_export( $arg, true ) ), "'" );
+			$r[] = trim( var_export( $arg, true ), "'" );
 		echo implode( ' ', $r );
 		echo "\n";
 	}

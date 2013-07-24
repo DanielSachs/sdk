@@ -28,7 +28,7 @@ class FormTest extends TestCase
 		$value = '<h1>unsafe</h2> & text';
 		$form->set_attribute( $attribute, $value );
 		$this->assertEquals( $form->get_attribute( $attribute ), $value );
-		$this->assertStringDoesNotContain( $value, $form->open_tag() );
+		$this->assertStringContains( 'unsafe_text="', $form->open_tag() );
 	}
 
 	/**

@@ -13,7 +13,7 @@ class checkbox
 {
 	use traits\checked;
 
-	public $self_closing = false;
+	public $self_closing = true;
 	public $tag = 'input';
 	public $type = 'checkbox';
 

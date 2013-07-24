@@ -178,6 +178,14 @@ class form
 	use inputs\traits\container;
 
 	/**
+		@brief		Has the form handled the POST array?
+		@see		is_posting()
+		@var		$has_posted
+		@since		20130723
+	**/
+	public $has_posted = false;
+
+	/**
 		@brief		Array of objects containing information about the available input types.
 		@var		$input_types
 		@since		20130524
@@ -272,6 +280,7 @@ class form
 	public function clear_post()
 	{
 		$this->post = null;
+		$this->has_posted = true;
 		return $this;
 	}
 
@@ -404,6 +413,8 @@ class form
 	**/
 	public function is_posting( array $post = null )
 	{
+		if ( $this->has_posted )
+			return count( $this->post ) > 0;
 		$post = ( $post === null ? $_POST : $post );
 		$posting = count( $post ) > 0;
 		if ( $posting )
@@ -449,6 +460,7 @@ class form
 	{
 		$this->post = ( $post === null ? $_POST : $post );
 		$this->use_post_value();
+		$this->has_posted = true;
 		return $this;
 	}
 

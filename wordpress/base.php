@@ -16,10 +16,12 @@
 
 	@author		Edward Plainview	edward@plainview.se
 	@copyright	GPL v3
-	@version	20130605
+	@version	20130722
 
 	@par	Changelog
 
+	- 20130723				Removed mail() method.
+	- 20130722				New: _construct()
 	- 20130605				New: yes_no()
 	- 20130604				Code: add_shortcode() has an optional callback parameter.
 	- 20130528				Fix: p() checks for sprintf problems.
@@ -240,6 +242,22 @@ class base
 		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal') );
 
 		$this->add_action( 'admin_init' );
+
+		$this->_construct();
+	}
+
+	/**
+		@brief		Overloadable method called after __construct.
+		@details
+
+		A convenience method that is called after the base is constructed.
+
+		This method has the advantage of not requiring neither parameters nor parent::.
+
+		@since		20130722
+	**/
+	public function _construct()
+	{
 	}
 
 	/**
@@ -559,7 +577,7 @@ class base
 			$string = explode("\n", $string);
 			$string = implode('</p><p>', $string);
 		}
-		echo '<div class="sd_message_box '.$type.'">
+		echo '<div class="message_box '.$type.'">
 			<p class="message_timestamp">'.$this->now().'</p>
 			<p>'.$string.'</p></div>';
 	}
@@ -1464,15 +1482,6 @@ class base
 	public function long_options()
 	{
 		return array();
-	}
-
-	/**
-		@brief		Create a PHPmailer object.
-		@return		\\plainview\\mail\\mail		Mail object.
-	**/
-	public static function mail()
-	{
-		return parent::mail();
 	}
 
 	/**

@@ -27,6 +27,13 @@ class mail
 	public $error = null;
 
 	/**
+		@brief		Changed after running send().
+		@var		$send_ok
+		@since		20130723
+	**/
+	public $send_ok = false;
+
+	/**
 		@brief		Internal function to handle similar add functions.
 		@param		string		$type		Type of function to call.
 		@param		string		$email		E-mail address to add.
@@ -93,7 +100,7 @@ class mail
 	**/
 	public function bcc( $email, $name = '' )
 	{
-		return $this->add( 'CC', $email, $name );
+		return $this->add( 'BCC', $email, $name );
 	}
 
 	/**
@@ -145,8 +152,8 @@ class mail
 	**/
 	public function send()
 	{
-		$result = parent::Send();
-		if ( ! $result )
+		$this->send_ok = parent::Send();
+		if ( ! $this->send_ok )
 			$this->error = $this->ErrorInfo;
 		return $this;
 	}
@@ -160,7 +167,7 @@ class mail
 	**/
 	public function send_ok()
 	{
-		return $this->error === null;
+		return $this->send_ok;
 	}
 
 	/**

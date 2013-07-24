@@ -29,7 +29,7 @@ class description
 	{
 		if ( $this->get_label() == '' )
 			return '';
-		return $this->open_tag() . $this->get_label() . $this->close_tag();
+		return $this->open_tag() . $this->get_label()->content . $this->close_tag();
 	}
 
 	/**

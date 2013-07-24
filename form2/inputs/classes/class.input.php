@@ -180,7 +180,7 @@ class input
 	**/
 	public function display_input()
 	{
-		$input = clone $this;
+		$input = clone( $this );
 
 		$input->set_attribute( 'id', $input->make_id() );
 		$input->set_attribute( 'name', $input->make_name() );
@@ -190,18 +190,20 @@ class input
 		if ( $input->is_required() )
 			$input->css_class( 'required' );
 
-		if ( ! $this->validates() )
-			$input->css_class( 'does_not_validate' );
-		else
-			if ( $this->requires_validation() )
+		if ( $this->requires_validation() && $this->form()->is_posting() )
+		{
+			if ( ! $this->validates() )
+				$input->css_class( 'does_not_validate' );
+			else
 				$input->css_class( 'validates' );
+		}
 
 		// Is the POST variable set?
 		if ( $input->form()->post_is_set() )
 		{
 			// Retrieve the post value.
 			$value = $input->get_value();
-			if ( $value !== null )
+			if ( $value != '' )
 			{
 				$value = \plainview\form2\form::unfilter_text( $value );
 				$input->value( $value );
@@ -223,7 +225,7 @@ class input
 	**/
 	public function display_label()
 	{
-		return $this->get_label();
+		return $this->get_label()->toString();
 	}
 
 	/**
@@ -234,6 +236,16 @@ class input
 	public function form()
 	{
 		return $this->container->form();
+	}
+
+	/**
+		@brief		Returns the input's ID.
+		@return		string		ID of input.
+		@since		20130723
+	**/
+	public function get_id()
+	{
+		return $this->get_attribute( 'id' );
 	}
 
 	/**
@@ -277,18 +289,11 @@ class input
 	{
 		$name = $this->get_attribute( 'name' );
 		$names = array_merge( $this->prefix, array( $name ) );
-		$r = '';
 
-		// No prefix? Just return the name.
-		if ( count( $names ) == 1 )
-			$r = $name;
-		else
-		{
-			// The first prefix does NOT have brackets. The rest do. *sigh*
-			$r = array_shift( $names );
-			while ( count( $names ) > 0 )
-				$r .= '[' . array_shift( $names ) . ']';
-		}
+		// The first prefix does NOT have brackets. The rest do. *sigh*
+		$r = array_shift( $names );
+		while ( count( $names ) > 0 )
+			$r .= '[' . array_shift( $names ) . ']';
 
 		return $r;
 	}

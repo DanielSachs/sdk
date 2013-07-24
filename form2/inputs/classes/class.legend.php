@@ -24,6 +24,7 @@ class legend
 	{
 		$this->container = $fieldset;
 		$this->fieldset = $fieldset;
+		$this->label = new label( $this );
 	}
 
 	public function __toString()

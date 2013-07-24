@@ -28,7 +28,10 @@ class checkboxes
 	**/
 	public function display_label()
 	{
-		return $this->label;
+		$label = clone( $this->label );
+		$label->tag = 'div';
+		$label->clear_attribute( 'for' );
+		return $label;
 	}
 
 	/**
@@ -51,7 +54,14 @@ class checkboxes
 	public function new_option( $o )
 	{
 		$input = new checkbox( $o->container, $o->name );
-		$input->set_attribute( 'name', $o->value );
+		if ( isset( $o->id ) )
+			$input->set_attribute( 'id', $o->id );
+		if ( isset( $o->label ) )
+			$input->label( $o->label );
+		if ( isset( $o->name ) )
+			$input->set_attribute( 'name', $o->name );
+		else
+			$input->set_attribute( 'name', $o->value );
 		return $input;
 	}
 
@@ -75,10 +85,20 @@ class checkboxes
 	**/
 	public function use_post_value()
 	{
-		foreach( $this->options as $option )
+		$name = $this->get_name();
+		foreach( $this->options as $index => $option )
 		{
-			$option->check( false );
-			$option->use_post_value();
+			// Create a temporary checkbox, which will contain the complete name inherited from the checkboxes.
+			$o = new \stdClass;
+			$o->container = $this->container;
+			$o->name = $name . '_' . $index;
+			$cb = $this->new_option( $o );
+
+			// Clear the check
+			$cb->check( false );
+			// And now set it according to the post
+			$cb->use_post_value();
+			$option->check( $cb->is_checked() );
 		}
 	}
 }

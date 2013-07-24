@@ -38,9 +38,7 @@ class select
 		if ( $input->is_required() )
 			$input->css_class( 'required' );
 
-		// Multiples require the [] part that isn't really part of the name.
-		if ( $input->is_multiple() )
-			$input->set_attribute( 'name', $input->make_name() );
+		$input->set_attribute( 'name', $input->make_name() );
 
 		$r = $input->indent() . $input->open_tag() . "\n";
 		foreach( $input->options as $option )

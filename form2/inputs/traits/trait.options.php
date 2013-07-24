@@ -63,7 +63,7 @@ trait options
 		$o->label = $p1;
 		$o->value = $p2;
 		$option = $this->new_option( $o );
-		$option->label( $p1 );
+		$option->content = $p1;
 		$option->value( $p2 );
 		$this->options[ $p2 ] = $option;
 		return $this;
@@ -138,6 +138,8 @@ trait options
 	{
 		$r = '';
 		$name = $this->_name;
+		$class = preg_replace( '/.*\\\\/', '', get_class( $this ) );
+		$r .= '<div class="' . $class . ' ' . $name . '">';
 		foreach( $this->options as $index => $option )
 		{
 			$option_value = $option->get_attribute( 'value' );
@@ -145,7 +147,7 @@ trait options
 			$o = new \stdClass();
 			$o->container = $this->container;
 			$o->id = $name . '_' . $index;
-			$o->name = $name;
+			$o->name = $name . '_' . $index;
 			$o->value = $option_value;
 			$input = $this->new_option( $o );
 			$input->check( $option->is_checked() );
@@ -153,15 +155,17 @@ trait options
 			if ( $this->is_required() )
 				$input->required();
 
-			$input->label = $option->get_label();
 			// Point the label to the new input.
+			$input->label( $option->label->content );
 			$input->label->set_input( $input );
 
 			$input->prefix = $this->prefix;
 
 			// Divs to make them separate lines.
-			$r .= $this->indent() . '<div>' . $input->display_input() . ' ' . $input->label . "</div>\n";
+			$class = preg_replace( '/.*\\\\/', '', get_class( $input ) );
+			$r .= $this->indent() . '<div class="'. $class .'">' . $input->display_input() . ' ' . $input->label . "</div>\n";
 		}
+		$r .= '</div>';
 		return $r;
 	}
 
@@ -172,6 +176,7 @@ trait options
 	public function prepare_to_display()
 	{
 		$this->_name = $this->get_attribute( 'name' );
+		$this->clear_attribute( 'name' );
 	}
 
 	public function use_post_value()

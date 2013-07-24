@@ -13,6 +13,14 @@ class select_option
 {
 	use traits\selected;
 
+	public function __toString()
+	{
+		$input = clone( $this );
+		// Options do not have IDs
+		$input->clear_attribute( 'id' );
+		return $input->indent() . $input->open_tag() . $input->content . $input->close_tag() . "\n";
+	}
+
 	public function check( $checked = true )
 	{
 		$this->selected( $checked );

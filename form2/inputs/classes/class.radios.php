@@ -44,6 +44,10 @@ class radios
 	{
 		$name = ( isset( $o->id ) ? $o->id : $o->name );
 		$input = new radio( $o->container, $name );
+		if ( isset( $o->id ) )
+			$input->set_attribute( 'id', $o->id );
+		if ( isset( $o->label ) )
+			$input->label( $o->label );
 		$input->set_attribute( 'name', $o->name );
 		$input->set_attribute( 'value', $o->value );
 		return $input;

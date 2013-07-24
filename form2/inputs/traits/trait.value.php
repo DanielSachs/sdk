@@ -58,9 +58,23 @@ trait value
 	}
 
 	/**
+		@brief		Returns the input's filtered value from the _POST variable.
+		@details	Strips off dangerous code.
+		@return		string		The filtered value of the _POST variable. If no value was in the post, null is returned.
+		@see		get_post_value()
+		@since		20130724
+	**/
+	public function get_filtered_post_value()
+	{
+		$value = $this->get_post_value();
+		return \plainview\form2\form::filter_text( $value );
+	}
+
+	/**
 		@brief		Returns the input's value from the _POST variable.
 		@details	Will strip off slashes before returning the value.
 		@return		string		The value of the _POST variable. If no value was in the post, null is returned.
+		@see		get_filtered_post_value()
 		@see		use_post_value()
 		@since		20130524
 	**/
