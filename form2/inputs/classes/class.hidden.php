@@ -24,7 +24,7 @@ class hidden
 	**/
 	public function _construct()
 	{
-		return $this->hidden( true );
+		return $this->hidden( 'hidden' );
 	}
 
 	public function display_label()

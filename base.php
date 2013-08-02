@@ -13,6 +13,8 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130730		form2 select count(), breadcrumbs, table.
+	- 20130729		html\element
 	- 20130723		form2, instance() fixed, is_email checks for empty, mail bcc, wordpress\\traits\\foundation.
 	- 20130722		wordpress\\base
 	- 20130719		Unit tests using phpunit. Navigation class. Default wordpress sv language file.
@@ -41,7 +43,7 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130723
+	@version		20130730
 **/
 class base
 {
@@ -57,7 +59,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130723;
+	protected $sdk_version = 20130730;
 
 	/**
 		@brief		Constructor.
@@ -277,6 +279,51 @@ class base
 	public static function hash( $string, $type = 'sha512' )
 	{
 		return hash($type, $string);
+	}
+
+	public static function human_time( $current, $reference = null, $options = [] )
+	{
+		$options = \plainview\base::merge_objects( [
+			'time' => date( 'U' ),
+			'text_day' => '1 day',
+			'text_days' => '%d days',
+			'text_hour' => '1 hour',
+			'text_hours' => '%d hours',
+			'text_minute' => '1 minute',
+			'text_minutes' => '%d minutes',
+			'text_second' => '1 second',
+			'text_seconds' => '%d seconds',
+		], $options );
+		if ( $reference === null )
+			$reference = $options->time;
+		if( ! is_int( $current ) )
+			$current = strtotime( $current );
+		$difference = abs( $reference - $current );
+		$minutes = round( $difference / 60, 0 );
+		$hours = round( $difference / ( 60 * 60 ), 0 );
+		$days = round( $difference / ( 60 * 60 * 24 ), 0 );
+		if ( $days > 0 )
+			if ( $days == 1 )
+				return $options->text_day;
+			else
+				return sprintf( $options->text_days, $days );
+
+		if ( $hours > 0 )
+			if ( $hours == 1 )
+				return $options->text_hour;
+			else
+				return sprintf( $options->text_hours, $hours );
+
+		if ( $minutes > 0 )
+			if ( $minutes == 1 )
+				return $options->text_minute;
+			else
+				return sprintf( $options->text_minutes, $minutes );
+
+		if ( $seconds == 1 )
+			return $options->text_second;
+		else
+			return sprintf( $options->text_seconds, $seconds );
 	}
 
 	/**

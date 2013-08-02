@@ -19,6 +19,24 @@ class SelectTest extends TestCase
 		return $this->select()->multiple()->value( 'sel1', 'sel2' );
 	}
 
+	public function test_count()
+	{
+		$select = $this->select();
+		$this->assertEquals( 3, count( $select ) );
+	}
+
+	public function test_count_with_optgroup()
+	{
+		$select = $this->select();
+		// Add a simple optgroup
+		$select->optgroup( 'testoptgroup' )
+			->option( 'Optgroup option 1', 1 )
+			->option( 'Optgroup option 2', 2 )
+			->option( 'Optgroup option 3', 3 );
+		// 7, because three options + three optgroupoptions + the optgroup itself!
+		$this->assertEquals( 7, count( $select ) );
+	}
+
 	public function test_ids()
 	{
 		$sel = $this->select()->display_input();

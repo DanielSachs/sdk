@@ -6,10 +6,11 @@ namespace plainview\form2\inputs;
 	@brief		Select input.
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130524
+	@version	20130730
 **/
 class select
 	extends input
+	implements \Countable
 {
 	use traits\options;
 	use traits\size;
@@ -27,6 +28,36 @@ class select
 	public function __toString()
 	{
 		return $this->indent() . $this->display_label() . $this->display_input();
+	}
+
+	/**
+		@brief		Sets the size of the select to fit the amount of options.
+		@return		$this		Method chaining.
+		@since		20130730
+	**/
+	public function autosize()
+	{
+		return $this->size( count( $this ) );
+	}
+
+	/**
+		@brief		Count how many optgroups and options this select has.
+		@details
+
+		Counting includes optgroups and the options of each group (hence the +1).
+
+		@return		int		A count of options and optgroups.
+		@since		20130730
+	**/
+	public function count()
+	{
+		$c = 0;
+		foreach( $this->options as $option )
+			if ( is_a( $option, 'plainview\\form2\\inputs\\select_optgroup' ) )
+				$c += count( $option ) + 1;
+			else
+				$c++;
+		return $c;
 	}
 
 	public function display_input()
@@ -119,8 +150,8 @@ class select
 	**/
 	public function optgroup( $name )
 	{
-		if ( isset( $this->inputs[ $name ] ) )
-			return $this->inputs[ $name ];
+		if ( isset( $this->options[ $name ] ) )
+			return $this->options[ $name ];
 		$input = new select_optgroup( $this, $name );
 		$this->options[ $name ] = $input;
 		return $input;

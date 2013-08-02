@@ -6,10 +6,11 @@ namespace plainview\form2\inputs;
 	@brief		A select's option group.
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130524
+	@version	20130730
 **/
 class select_optgroup
 	extends input
+	implements \Countable
 {
 	use traits\options;
 
@@ -28,6 +29,16 @@ class select_optgroup
 	{
 		foreach( $this->options as $option )
 			$option->check( $checked );
+	}
+
+	/**
+		@brief		Count how many options this optgroup has.
+		@return		int		The amount of options this optgroup has.
+		@since		20130730
+	**/
+	public function count()
+	{
+		return count( $this->options );
 	}
 
 	public function display_input()
