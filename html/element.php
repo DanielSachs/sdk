@@ -8,6 +8,7 @@ namespace plainview\html;
 
 	@par		Changelog
 
+	- 20130729	has_attribute()
 	- 20130702	content() added. toString() added.
 	- 20130604	required() sets aria-required attribute also.
 	- 20130524	New: get_boolean_attribute, set_boolean_attribute()
@@ -17,7 +18,7 @@ namespace plainview\html;
 	- 20130506	First version.
 
 	@since		20130506
-	@version	20130702
+	@version	20130729
 **/
 trait element
 {
@@ -174,15 +175,15 @@ trait element
 
 	/**
 		@brief		Returns the value of an attribute.
-		@param		string		$type			Type of attribute to retrieve.
+		@param		string		$attribute			Type of attribute to retrieve.
 		@return		mixed						Null, if the attribute does not exist, or the attribute value.
 		@since		20130509
 	**/
-	public function get_attribute( $type )
+	public function get_attribute( $attribute )
 	{
-		if ( ! isset( $this->attributes[ $type ] ) )
+		if ( ! isset( $this->attributes[ $attribute ] ) )
 			return null;
-		return $this->attributes[ $type ]->value();
+		return $this->attributes[ $attribute ]->value();
 	}
 
 	/**
@@ -205,6 +206,17 @@ trait element
 	public function get_content()
 	{
 		return $this->content;
+	}
+
+	/**
+		@brief		Return if an attribute is set.
+		@param		string		$attribute		The name of the attribute to query.
+		@return		bool		True, if the attribute is set to anything.
+		@since		20130729
+	**/
+	public function has_attribute( $attribute )
+	{
+		return isset( $this->attributes[ $attribute ] );
 	}
 
 	/**
