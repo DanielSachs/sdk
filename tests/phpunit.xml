@@ -23,5 +23,8 @@
         <testsuite name="Plainview SDK Pagination">
             <directory>../pagination/tests</directory>
         </testsuite>
+        <testsuite name="Plainview SDK Breadcrumbs">
+            <directory>../breadcrumbs/tests</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
