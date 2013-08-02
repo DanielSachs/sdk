@@ -37,7 +37,7 @@ require_once( __DIR__ . '/table_element.php' );
 	$tr->td()->text( $name->first )->css_style( 'font-weight: bold' );
 	@endcode
 
-	@par		Example 3 - How about some CSS classing??
+	@par		Example 3 - How about some CSS classing?
 
 	@code
 	$tr->td()->text( $name->first )->css_class( 'align_center' )->css_style( 'font-size: 200%;' );
@@ -56,6 +56,8 @@ require_once( __DIR__ . '/table_element.php' );
 
 	@par		Changelog
 
+	- 20130801		empty() added.
+	- 20130730		Random element IDs have been removed.
 	- 20130527		Element UUID length extended from 4 to 8 to help prevent conflicts.
 	- 20130513		Table self indents, instead of relying on html\\element.
 	- 20130510		Sections do not display if they are empty.
@@ -68,7 +70,7 @@ require_once( __DIR__ . '/table_element.php' );
 	@author			Edward Plainview <edward.plainview@sverigedemokraterna.se>
 	@copyright		GPL v3
 	@since			20130430
-	@version		20130510
+	@version		20130801
 **/
 class table
 {
@@ -242,6 +244,16 @@ class section
 	}
 
 	/**
+		@brief		Does this section have any rows?
+		@return		bool		True if the section is empty.
+		@since		20130801
+	**/
+	public function is_empty()
+	{
+		return count( $this->rows ) < 1;
+	}
+
+	/**
 		@brief		Retrieve an existing or create a new row, with an optional id.
 		@details	Call with no ID to create a new row. Call with an ID that does not exist and a new row will be created
 
@@ -345,9 +357,13 @@ class row
 
 	public function __construct( $section, $id = null )
 	{
-		if ( $id === null )
-			$id = \plainview\base::uuid( 8 );
-		$this->id = $id;
+		if ( $id !== null )
+		{
+			$this->attribute( 'id' )->set( $id );
+			$this->id = $id;
+		}
+		else
+			$this->id = \plainview\base::uuid();
 		$this->cells = array();
 		$this->section = $section;
 	}
@@ -360,8 +376,6 @@ class row
 	{
 		if ( count( $this->cells ) < 1 )
 			return '';
-
-		$this->attribute( 'id' )->set( $this->id );
 
 		$r = $this->indent();
 		$r .= $this->open_tag() . "\n";
@@ -452,15 +466,18 @@ class cell
 
 	public function __construct( $row, $id = null )
 	{
-		if ( $id === null )
-			$id = \plainview\base::uuid( 8 );
-		$this->id = $id;
+		if ( $id !== null )
+		{
+			$this->id = $id;
+			$this->attribute( 'id' )->set( $this->id );
+		}
+		else
+			$this->id = \plainview\base::uuid();
 		$this->row = $row;
 	}
 
 	public function __tostring()
 	{
-		$this->attribute( 'id' )->set( $this->id );
 		return $this->indent() . $this->open_tag() . $this->text . $this->close_tag() . "\n";
 	}
 
