@@ -34,7 +34,7 @@ use \plainview\html\div;
 
 	This should show the use 5530 / 186 ~= 30 pages.
 
-	After having run render() once, the pagination class itself can be called multiple times to display the same pagination.
+	After having run render() once, the pagination class itself can be called multiple times to display the same pagination: use __toString.
 
 	@par		Widths
 
@@ -47,7 +47,7 @@ use \plainview\html\div;
 
 	The standard width is 2, meaning that for a max of 20 pages and current page 10:
 
-	1 2 ... 8 9 10 11 12 .. 19 20
+	1 2 3 ... 8 9 10 11 12 .. 18 19 20
 
 	Widths can be mixed:
 
