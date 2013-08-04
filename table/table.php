@@ -50,12 +50,9 @@ require_once( __DIR__ . '/table_element.php' );
 	$tr->td( 'first_name_1' )->css_class( 'align_center' )->css_style( 'font-size: 200%;' );
 	@endcode
 
-	@par		Source code sorting
-
-	The functions are sorted in order of importance: table > sections > rows > cells
-
 	@par		Changelog
 
+	- 20130803		count() added for table, sections and rows. Source split into separate files.
 	- 20130801		empty() added.
 	- 20130730		Random element IDs have been removed.
 	- 20130527		Element UUID length extended from 4 to 8 to help prevent conflicts.
@@ -73,6 +70,7 @@ require_once( __DIR__ . '/table_element.php' );
 	@version		20130801
 **/
 class table
+	implements \Countable
 {
 	use table_element;
 
@@ -158,6 +156,16 @@ class table
 	}
 
 	/**
+		@brief		Return a count of body rows.
+		@return		int		How many rows the body has.
+		@since		20130803
+	**/
+	public function count()
+	{
+		return count( $this->body );
+	}
+
+	/**
 		@brief		Return the foot section.
 		@return		foot		The table section of the table.
 		@since		20130430
@@ -181,340 +189,5 @@ class table
 	{
 		return 0;
 	}
-}
-
-/**
-	@brief		A table section: the thead or tbody.
-	@since		20130430
-	@version	20130430
-**/
-class section
-{
-	use table_element;
-
-	/**
-		@brief		Array of rows.
-		@var		$rows
-	**/
-	public $rows;
-
-	/**
-		@brief		Parent table.
-		@var		$table
-	**/
-	public $table;
-
-	/**
-		@brief		Object / element HTML tag.
-		@var		$tag
-	**/
-	public $tag = 'section';
-
-	public function __construct( $table )
-	{
-		$this->table = $table;
-		$this->rows = array();
-	}
-
-	/**
-		@brief		Returns the section as an HTML string.
-		@since		20130430
-	**/
-	public function __tostring()
-	{
-		if ( $this->text == '' && count( $this->rows ) < 1 )
-			return '';
-
-		$r = $this->indent();
-		$r .= $this->open_tag() . "\n";
-
-		if ( $this->text != '' )
-			$r .= $this->text;
-
-		foreach( $this->rows as $row )
-			$r .= $row;
-		$r .= $this->indent();
-		$r .= $this->close_tag() . "\n";
-		return $r;
-	}
-
-	public function indentation()
-	{
-		return $this->table->indentation() + 1;
-	}
-
-	/**
-		@brief		Does this section have any rows?
-		@return		bool		True if the section is empty.
-		@since		20130801
-	**/
-	public function is_empty()
-	{
-		return count( $this->rows ) < 1;
-	}
-
-	/**
-		@brief		Retrieve an existing or create a new row, with an optional id.
-		@details	Call with no ID to create a new row. Call with an ID that does not exist and a new row will be created
-
-		Call with an ID that has previously been created and it will return the requested row.
-
-		@param		string		$id		The ID (attribute) of this row.
-		@return		row		The existing or newly created row.
-		@since		20130430
-	**/
-	public function row( $id = null )
-	{
-		if ( $id === null || ! isset( $this->rows[ $id ] ) )
-		{
-			$row = new row( $this, $id );
-			$id = $row->id;
-			$this->rows[ $id ] = $row;
-		}
-		return $this->rows[ $id ];
-	}
-}
-/**
-	@brief		Body section of table.
-	@since		20130430
-	@version	20130430
-**/
-class body
-	extends section
-{
-	public $tag = 'tbody';
-}
-
-/**
-	@brief		Caption section of table.
-	@since		20130430
-	@version	20130430
-**/
-class caption
-	extends section
-{
-	/**
-		@brief		Object / element HTML tag.
-		@var		$tag
-	**/
-	public $tag = 'caption';
-}
-
-/**
-	@brief		Foot section of table.
-	@since		20130430
-	@version	20130430
-**/
-class foot
-	extends section
-{
-	public $tag = 'tfoot';
-}
-
-/**
-	@brief		Head section of table.
-	@since		20130430
-	@version	20130430
-**/
-class head
-	extends section
-{
-	public $tag = 'thead';
-}
-
-/**
-	@brief		A table row.
-	@since		20130430
-	@version	20130430
-**/
-class row
-{
-	use table_element;
-
-	/**
-		@brief		Array of cells.
-		@var		$cells
-	**/
-	public $cells;
-
-	/**
-		@brief		Unique ID of this row.
-		@var		$id
-	**/
-	public $id;
-
-	/**
-		@brief		Parent section.
-		@var		$section
-	**/
-	public $section;
-
-	/**
-		@brief		Object / element tag.
-		@var		$tag
-	**/
-	public $tag = 'tr';
-
-	public function __construct( $section, $id = null )
-	{
-		if ( $id !== null )
-		{
-			$this->attribute( 'id' )->set( $id );
-			$this->id = $id;
-		}
-		else
-			$this->id = \plainview\base::uuid();
-		$this->cells = array();
-		$this->section = $section;
-	}
-
-	/**
-		@brief		Return the row as an HTML string.
-		@since		20130430
-	**/
-	public function __tostring()
-	{
-		if ( count( $this->cells ) < 1 )
-			return '';
-
-		$r = $this->indent();
-		$r .= $this->open_tag() . "\n";
-		foreach( $this->cells as $cell )
-			$r .= $cell;
-		$r .= $this->indent();
-		$r .= $this->close_tag() . "\n";
-
-		return $r;
-	}
-
-	/**
-		@brief		Retrieve an existing cell or create a new one.
-		@details	If the ID exists, the existing cell is returned.
-
-		If not: if $cell is null, return false;
-
-		If $cell is a cell, add is to the cell array and return it again.
-
-		@param		string			$id			ID of cell to retrieve or create.
-		@param		cell			$cell		Cell to add to the cell array.
-		@return		cell						The table cell specified, or the newly-created cell.
-		@since		20130430
-	**/
-	public function cell( $id = null , $cell = null )
-	{
-		if ( $id === null && $cell === null )
-			return false;
-		if ( ! isset( $this->cells[ $id ] ) )
-		{
-			$id = $cell->id;
-			$this->cells[ $id ] = $cell;
-		}
-		return $this->cells[ $id ];
-	}
-
-	public function indentation()
-	{
-		return $this->section->indentation() + 1;
-	}
-
-	/**
-		@brief		Either retrieve an existing td cell or create a new one.
-		@param		string		$id			The HTML ID of the cell.
-		@return		td						The requested cell.
-		@since		20130430
-	**/
-	public function td( $id = null )
-	{
-		return $this->cell( $id, new td( $this, $id ) );
-	}
-
-	/**
-		@brief		Either retrieve an existing th cell or create a new one.
-		@param		string		$id			The HTML ID of the cell.
-		@return		th						The requested cell.
-		@since		20130430
-	**/
-	public function th( $id = null )
-	{
-		return $this->cell( $id, new th( $this, $id ) );
-	}
-}
-
-/**
-	@brief		A table cell.
-	@details	This is a superclass for the td and th subclasses.
-	@since		20130430
-	@version	20130430
-**/
-class cell
-{
-	use table_element;
-
-	/**
-		@brief		Unique ID of this cell.
-		@var		$id
-	**/
-	public $id;
-
-	/**
-		@brief		row object with which this cell was created.
-		@var		$row
-	**/
-	public $row;
-
-	public $tag = 'cell';
-
-	public function __construct( $row, $id = null )
-	{
-		if ( $id !== null )
-		{
-			$this->id = $id;
-			$this->attribute( 'id' )->set( $this->id );
-		}
-		else
-			$this->id = \plainview\base::uuid();
-		$this->row = $row;
-	}
-
-	public function __tostring()
-	{
-		return $this->indent() . $this->open_tag() . $this->text . $this->close_tag() . "\n";
-	}
-
-	public function indentation()
-	{
-		return $this->row->indentation() + 1;
-	}
-
-	/**
-		@brief		Return the row of this cell.
-		@details	Is used to continue the ->td()->row()->td() chain.
-		@return		row		The table row this cell was created in.
-		@since		20130430
-	**/
-	public function row()
-	{
-		return $this->row;
-	}
-}
-
-/**
-	@brief		Cell of type TD.
-	@since		20130430
-**/
-class td
-	extends cell
-{
-	public $tag = 'td';
-}
-
-/**
-	@brief		Cell of type TH.
-	@since		20130430
-**/
-class th
-	extends cell
-{
-	public $tag = 'th';
 }
 

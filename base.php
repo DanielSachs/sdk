@@ -13,6 +13,7 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130803		table.
 	- 20130730		form2 select count(), breadcrumbs, table.
 	- 20130729		html\element
 	- 20130723		form2, instance() fixed, is_email checks for empty, mail bcc, wordpress\\traits\\foundation.
