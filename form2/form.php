@@ -2,67 +2,6 @@
 
 namespace plainview\form2;
 
-require_once( __DIR__ . '/inputs/traits/trait.autocomplete.php' );
-require_once( __DIR__ . '/inputs/traits/trait.checked.php' );
-require_once( __DIR__ . '/inputs/traits/trait.container.php' );
-require_once( __DIR__ . '/inputs/traits/trait.disabled.php' );
-require_once( __DIR__ . '/inputs/traits/trait.high.php' );
-require_once( __DIR__ . '/inputs/traits/trait.label.php' );
-require_once( __DIR__ . '/inputs/traits/trait.list.php' );
-require_once( __DIR__ . '/inputs/traits/trait.low.php' );
-require_once( __DIR__ . '/inputs/traits/trait.max.php' );
-require_once( __DIR__ . '/inputs/traits/trait.maxlength.php' );
-require_once( __DIR__ . '/inputs/traits/trait.min.php' );
-require_once( __DIR__ . '/inputs/traits/trait.minlength.php' );
-require_once( __DIR__ . '/inputs/traits/trait.optimum.php' );
-require_once( __DIR__ . '/inputs/traits/trait.options.php' );
-require_once( __DIR__ . '/inputs/traits/trait.placeholder.php' );
-require_once( __DIR__ . '/inputs/traits/trait.readonly.php' );
-require_once( __DIR__ . '/inputs/traits/trait.selected.php' );
-require_once( __DIR__ . '/inputs/traits/trait.size.php' );
-require_once( __DIR__ . '/inputs/traits/trait.step.php' );
-require_once( __DIR__ . '/inputs/traits/trait.validation.php' );
-require_once( __DIR__ . '/inputs/traits/trait.value.php' );
-
-require_once( __DIR__ . '/inputs/classes/class.input.php' );
-require_once( __DIR__ . '/inputs/classes/class.option.php' );
-require_once( __DIR__ . '/inputs/classes/class.text.php' );
-require_once( __DIR__ . '/inputs/classes/class.number.php' );
-require_once( __DIR__ . '/inputs/classes/class.select_optgroup.php' );
-
-require_once( __DIR__ . '/validation/class.error.php' );
-
-require_once( __DIR__ . '/inputs/classes/class.button.php' );
-require_once( __DIR__ . '/inputs/classes/class.checkbox.php' );
-require_once( __DIR__ . '/inputs/classes/class.checkboxes.php' );
-require_once( __DIR__ . '/inputs/classes/class.datalist.php' );
-require_once( __DIR__ . '/inputs/classes/class.datalist_option.php' );
-require_once( __DIR__ . '/inputs/classes/class.date.php' );
-require_once( __DIR__ . '/inputs/classes/class.datetime.php' );
-require_once( __DIR__ . '/inputs/classes/class.datetime_local.php' );
-require_once( __DIR__ . '/inputs/classes/class.description.php' );
-require_once( __DIR__ . '/inputs/classes/class.email.php' );
-require_once( __DIR__ . '/inputs/classes/class.fieldset.php' );
-require_once( __DIR__ . '/inputs/classes/class.hidden.php' );
-require_once( __DIR__ . '/inputs/classes/class.legend.php' );
-require_once( __DIR__ . '/inputs/classes/class.label.php' );
-require_once( __DIR__ . '/inputs/classes/class.markup.php' );
-require_once( __DIR__ . '/inputs/classes/class.meter.php' );
-require_once( __DIR__ . '/inputs/classes/class.month.php' );
-require_once( __DIR__ . '/inputs/classes/class.password.php' );
-require_once( __DIR__ . '/inputs/classes/class.radio.php' );
-require_once( __DIR__ . '/inputs/classes/class.radios.php' );
-require_once( __DIR__ . '/inputs/classes/class.range.php' );
-require_once( __DIR__ . '/inputs/classes/class.search.php' );
-require_once( __DIR__ . '/inputs/classes/class.select.php' );
-require_once( __DIR__ . '/inputs/classes/class.select_option.php' );
-require_once( __DIR__ . '/inputs/classes/class.submit.php' );
-require_once( __DIR__ . '/inputs/classes/class.tel.php' );
-require_once( __DIR__ . '/inputs/classes/class.time.php' );
-require_once( __DIR__ . '/inputs/classes/class.textarea.php' );
-require_once( __DIR__ . '/inputs/classes/class.url.php' );
-require_once( __DIR__ . '/inputs/classes/class.week.php' );
-
 /**
 	@brief		HTML5/XHTML form manipulation class.
 	@details
