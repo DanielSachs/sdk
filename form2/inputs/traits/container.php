@@ -61,13 +61,25 @@ trait container
 
 	public function __toString()
 	{
-		$r = $this->indent() . $this->open_tag() . "\n";
+		$r = $this->__toString_before_container();
+		$r .= $this->indent() . $this->open_tag() . "\n";
 		$r .= $this->__toString_before_inputs();
 		foreach( $this->inputs as $input )
 			$r .= $input;
 		$r .= $this->__toString_after_inputs();
 		$r .= $this->indent() . $this->close_tag() . "\n";
+		$r .= $this->__toString_after_container();
 		return $r;
+	}
+
+	/**
+		@brief		Allow subclasses to housekeep before displaying the container.
+		@return		string		Empty string.
+		@since		20130805
+	**/
+	public function __toString_after_container()
+	{
+		return '';
 	}
 
 	/**
@@ -76,6 +88,16 @@ trait container
 		@since		20130524
 	**/
 	public function __toString_after_inputs()
+	{
+		return '';
+	}
+
+	/**
+		@brief		Allow subclasses to housekeep after displaying the container.
+		@return		string		Empty string.
+		@since		20130805
+	**/
+	public function __toString_before_container()
 	{
 		return '';
 	}
@@ -112,12 +134,10 @@ trait container
 		@return		this		Object chaining.
 		@since		20130524
 	**/
-	public function add( $input )
+	public function add_input( $input )
 	{
 		$input->form = $this->form();
-
 		$input->container = $this;
-
 		$name = $input->get_attribute( 'name' );
 		$this->inputs[ $name ] = $input;
 		return $this;
@@ -182,7 +202,7 @@ trait container
 		$type = $input_type->class;
 		$name = str_replace( '.', '_', $name );
 		$input = new $type( $this, $name );
-		$this->add( $input );
+		$this->add_input( $input );
 		return $input;
 	}
 

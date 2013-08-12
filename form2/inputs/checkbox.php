@@ -23,6 +23,19 @@ class checkbox
 		$this->value( 'on' );
 	}
 
+	/**
+		@brief		Input before label.
+	**/
+	public function assemble_input_string( $o )
+	{
+		$r = '';
+		$r .= $o->indent . $o->input . "\n";
+		$r .= $o->indent . $o->label . "\n";
+		if ( isset( $o->description ) )
+			$r .= $o->indent . $o->description . "\n";
+		return $r;
+	}
+
 	public function check( $checked = true )
 	{
 		$this->checked( $checked );

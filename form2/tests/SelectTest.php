@@ -30,9 +30,9 @@ class SelectTest extends TestCase
 		$select = $this->select();
 		// Add a simple optgroup
 		$select->optgroup( 'testoptgroup' )
-			->option( 'Optgroup option 1', 1 )
-			->option( 'Optgroup option 2', 2 )
-			->option( 'Optgroup option 3', 3 );
+			->option( 'Optgroup option 1', 'v1' )
+			->option( 'Optgroup option 2', 'v2' )
+			->option( 'Optgroup option 3', 'v3' );
 		// 7, because three options + three optgroupoptions + the optgroup itself!
 		$this->assertEquals( 7, count( $select ) );
 	}

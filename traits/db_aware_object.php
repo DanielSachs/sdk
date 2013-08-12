@@ -15,6 +15,7 @@ namespace plainview\traits;
 	- use \plainview\wordpress\db_aware_object or \plainview\drupal\db_aware_object.
 	- Override the db_table() function.
 	- Override the keys() function.
+	- Override the id_key() method, alternatively put a static $id_key variable in your class.
 
 	In this example, assume that the email_user class uses this trait.
 
@@ -26,13 +27,14 @@ namespace plainview\traits;
 
 	$email_users = email_user:sqls( $rows );
 
-	@author			Edward Plainview		edward@plainview.se
-	@copyright		GPL v3
-	@version		20130430
-
 	@par		Changelog
 
-	- @b 2013-04-22		First release.
+	- 20130810	self::$id_key will be used if available.
+	- 20130422	First release.
+
+	@author			Edward Plainview		edward@plainview.se
+	@copyright		GPL v3
+	@version		20130810
 **/
 
 trait db_aware_object
@@ -77,6 +79,44 @@ trait db_aware_object
 	}
 
 	/**
+		@brief		Inserts the object into the database.
+		@details	Overload this function if the object that uses this trait needs to hook into db_insert.
+		@since		20130809
+	**/
+	public function db_insert( $fields = null )
+	{
+		return $this->__db_insert( $fields );
+	}
+
+	/**
+		@brief		Actual insert function.
+		@details	Insert the object into the DB.
+		@since		20130809
+	**/
+	public function __db_insert( $fields = null )
+	{
+	}
+
+	/**
+		@brief		Loads the object from the database.
+		@details	Overload this function if the object that uses this trait needs to hook into db_load.
+		@since		20130809
+	**/
+	public static function db_load( $id )
+	{
+		return self::__db_load( $id );
+	}
+
+	/**
+		@brief		Actual load function.
+		@details	Load the object from the DB.
+		@since		20130809
+	**/
+	public static function __db_load( $id )
+	{
+	}
+
+	/**
 		@brief		Updates the database.
 		@details	Overload this function if the object that uses this trait needs to hook into db_update.
 		@since		20130430
@@ -102,15 +142,31 @@ trait db_aware_object
 	**/
 	public function fields()
 	{
-		$rv = array();
+		$r = array();
 		foreach( $this->keys() as $key )
 		{
 			if ( $this->$key === '' )
 				$this->$key = null;
-			$rv[ $key ] = $this->$key;
+			$r[ $key ] = $this->$key;
 		}
-		unset( $rv[ $this->id_key() ] );
-		return $rv;
+		unset( $r[ $this->id_key() ] );
+		return $r;
+	}
+
+	/**
+		@brief		Return an array containing all field data to be updated / inserted.
+		@return		array		An array containing field keys and values.
+		@since		20130809
+	**/
+	public function get_field_data()
+	{
+		// Create a clone of this object so that the serializing doesn't disturb anything.
+		$id_key = self::id_key();
+		$o = clone $this;
+		self::serialize_keys( $o );
+		$fields = $o->fields();
+		unset( $fields[ $id_key ] );
+		return $fields;
 	}
 
 	/**
@@ -120,6 +176,8 @@ trait db_aware_object
 	**/
 	public static function id_key()
 	{
+		if ( isset( self::$id_key ) )
+			return self::$id_key;
 		return 'id';
 	}
 
@@ -186,14 +244,14 @@ trait db_aware_object
 	{
 		if ( $array === false )
 			return false;
-		$rv = array();
+		$r = array();
 		$id_key = self::id_key();
 		foreach( $array as $row )
 		{
 			$row = (object)$row;
-			$rv[ $row->$id_key ] = self::sql( $row );
+			$r[ $row->$id_key ] = self::sql( $row );
 		}
-		return $rv;
+		return $r;
 	}
 
 	/**

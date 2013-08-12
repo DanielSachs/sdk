@@ -9,35 +9,20 @@ namespace plainview\form2\inputs;
 	@version	20130524
 **/
 class radios
-	extends input
+	extends inputfieldset
 {
-	use traits\options;
-	use traits\value
-	{
-		traits\options::use_post_value insteadof traits\value;
-		traits\options::value insteadof traits\value;
-	}
-
-	public $self_closing = false;
-	public $tag = 'div';
-
 	public function _construct()
 	{
+		parent::_construct();
 		$this->css_class( 'radios' );
 	}
 
-	/**
-		@brief		No global label.
-		@return		string		The radios label as a normal string.
-	**/
-	public function display_label()
+	public function __toString()
 	{
-		return $this->label;
-	}
-
-	public function display_value()
-	{
-		return $this->options_to_inputs();
+		$name = $this->get_name();
+		foreach( $this->inputs as $input )
+			$input->set_attribute( 'name', $name );
+		return parent::__toString();
 	}
 
 	public function new_option( $o )
@@ -48,8 +33,9 @@ class radios
 			$input->set_attribute( 'id', $o->id );
 		if ( isset( $o->label ) )
 			$input->label( $o->label );
-		$input->set_attribute( 'name', $o->name );
+		$input->set_attribute( 'name', $name );
 		$input->set_attribute( 'value', $o->value );
+		$input->label->update_for();
 		return $input;
 	}
 }

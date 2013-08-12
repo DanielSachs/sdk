@@ -3,47 +3,28 @@
 namespace plainview\form2\inputs;
 
 /**
-	@brief		A convenience input containing checkboxes.
+	@brief		A fieldset for checkboxes.
+	@details
+
+	The checkboxes are placed in a fieldset with a legend.
+
+	The legend is from the checkboxes input's label.
+
+	@par		Usage
+
+	$cbs = $form->checkboxes( 'checkboxestest' )
+		->label( 'Your sex' )
+		->option( 'Male', 'm' )
+		->option( 'Female', 'f' )
+		->value( 'm' );
+
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
 	@version	20130524
 **/
 class checkboxes
-	extends input
+	extends inputfieldset
 {
-	use traits\options;
-	use traits\value
-	{
-		traits\options::use_post_value insteadof traits\value;
-		traits\options::value insteadof traits\value;
-	}
-
-	public $self_closing = false;
-	public $tag = 'div';
-
-	/**
-		@brief		This input does not have a real label because each checkbox has one.
-		@return		string		A string that describes the checkboxes group.
-		@since		20130524
-	**/
-	public function display_label()
-	{
-		$label = clone( $this->label );
-		$label->tag = 'div';
-		$label->clear_attribute( 'for' );
-		return $label;
-	}
-
-	/**
-		@brief		Display the checkboxes in between the div tags.
-		@return		string		The checkboxes.
-		@since		20130524
-	**/
-	public function display_value()
-	{
-		return $this->options_to_inputs();
-	}
-
 	/**
 		@brief		Create a new checkbox option.
 		@param		object			$o		Options.
@@ -59,24 +40,12 @@ class checkboxes
 		if ( isset( $o->label ) )
 			$input->label( $o->label );
 		if ( isset( $o->name ) )
-			$input->set_attribute( 'name', $o->name );
+			$input->set_attribute( 'name', $o->container_name . '_' . $o->name );
 		else
 			$input->set_attribute( 'name', $o->value );
+		$input->set_value( $o->name );
+		$input->label->update_for();
 		return $input;
-	}
-
-	/**
-		@brief		Assign the prefix to each of the checkboxes.
-		@param		string		$prefix		Prefix to append to the checkboxes.
-		@return		this		Object chaining.
-		@since		20130524
-	**/
-	public function prefix( $prefix )
-	{
-		$this->prefix = func_get_args();
-		foreach( $this->options as $option )
-			$option->prefix = $this->prefix;
-		return $this;
 	}
 
 	/**
@@ -86,7 +55,7 @@ class checkboxes
 	public function use_post_value()
 	{
 		$name = $this->get_name();
-		foreach( $this->options as $index => $option )
+		foreach( $this->get_options() as $index => $option )
 		{
 			// Create a temporary checkbox, which will contain the complete name inherited from the checkboxes.
 			$o = new \stdClass;

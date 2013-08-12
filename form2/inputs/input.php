@@ -81,15 +81,24 @@ class input
 		if ( $this->is_required() )
 			$div->css_class( 'required' );
 
-		$description = $this->display_description();
-		if ( $description != '' )
-			$description = "\n" . $this->indent() . $placeholders->description;
+		// Prepare the input string that will be displayed to the user.
+		$o = new \stdClass;
+		$o->indent = $this->indent();
+		$o->input = $placeholders->input;
+		$o->label = $placeholders->label;
+		if ( $this->description->label->content != '' )
+		{
+			$desc_id = $this->make_id() . '_description';
+			$this->description->set_attribute( 'id', $desc_id );
+			$this->set_attribute( 'aria-describedby', $desc_id );
+			$o->description = $placeholders->description;
+		}
+		$input_string = $this->assemble_input_string( $o );
+
 		$r = sprintf( '%s%s%s',
 			$div->open_tag(),
 			"\n",
-			$this->indent() . $placeholders->label . "\n" .
-			$this->indent() . $placeholders->input .
-			$description
+			$input_string
 		);
 		// Increase one tab
 		$r = preg_replace( '/^\\t/m', "\t\t", $r );
@@ -127,6 +136,34 @@ class input
 		foreach( func_get_args() as $arg )
 			$this->prefix[] = $arg;
 		return $this;
+	}
+
+	/**
+		@brief		Assemble an input string.
+		@details
+
+		Given an object containing the following parts, assemble them all into a complete label + input + descritption string.
+
+		- @b indent			A string of tabs of a specific width.
+		- @b label			Label div/string/placeholder.
+		- @b input			Input div/string/placeholder.
+		- @b [description]	Optional description div/string/placeholder.
+
+		This method exists to give subclasses the flexibility to display their own order (checboxes and radios need to display their input before their label, for example).
+
+		@param		object		$o
+
+		@return		string		The assembled string to display to the user.
+		@since		20130806
+	**/
+	public function assemble_input_string( $o )
+	{
+		$r = '';
+		$r .= $o->indent . $o->label . "\n";
+		$r .= $o->indent . $o->input . "\n";
+		if ( isset( $o->description ) )
+			$r .= $o->indent . $o->description . "\n";
+		return $r;
 	}
 
 	/**
@@ -270,9 +307,8 @@ class input
 	**/
 	public function make_id()
 	{
-		$id = $this->get_attribute( 'id' );
-		if ( $id !== false )
-			return $id;
+		if ( $this->has_attribute( 'id' ) )
+			return $this->get_attribute( 'id' );
 		$id = $this->make_name();
 		$id = \plainview\base::strtolower( $id );
 		$id = preg_replace( '/[\[|\]]/', '_', $id );

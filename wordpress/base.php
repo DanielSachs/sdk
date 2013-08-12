@@ -14,12 +14,13 @@
 		extends \\plainview\\wordpress\\base
 	@endcode
 
-	@author		Edward Plainview	edward@plainview.se
-	@copyright	GPL v3
-	@version	20130722
-
 	@par	Changelog
 
+	- 20130811				$plugin_version
+	- 20130810				time_to_string()
+	- 20130809				No longer needs to be constructed with the __FILE__ as a parameter. \n
+							admin_init action removed. \n
+							$this->is_multisite added.
 	- 20130723				Removed mail() method.
 	- 20130722				New: _construct()
 	- 20130605				New: yes_no()
@@ -91,6 +92,11 @@
 	- 2011-10-28	14:00	URLMake removed. tabs() now uses Wordpress' add_query_arg and remove_query_arg.
 	- 2011-11-04	09:42	now() is public
 	- 2011-11-07	16:11	new: rmdir().
+
+	@author		Edward Plainview	edward@plainview.se
+	@copyright	GPL v3
+	@version	20130811
+
 */
 
 namespace plainview\wordpress;
@@ -136,6 +142,13 @@ class base
 		@var		$paths
 	**/
 	public $paths = array();
+
+	/**
+		@brief		The version of the plugin.
+		@since		20130811
+		@var		$plugin_version
+	**/
+	public $plugin_version = 20000101;
 
 	/**
 		@brief		Use this property in your extended class to require that the SDK is a specific version.
@@ -198,6 +211,13 @@ class base
 	**/
 	public function __construct( $filename = null )
 	{
+		// If no filename was specified, try to get the parent's filename.
+		if ( $filename === null )
+		{
+			$stacktrace = @debug_backtrace( false );
+			$filename = $stacktrace[ 0 ][ 'file' ];
+		}
+
 		if ( ! defined( 'ABSPATH' ) )
 		{
 			// Was this run from the command line?
@@ -220,6 +240,7 @@ class base
 		$this->wpdb = $wpdb;
 
 		$this->is_network = MULTISITE;
+		$this->is_multisite = MULTISITE;
 
 		$this->paths = array(
 			'__FILE__' => $filename,
@@ -240,8 +261,6 @@ class base
 
 		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal') );
 		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal') );
-
-		$this->add_action( 'admin_init' );
 
 		$this->_construct();
 	}
@@ -317,62 +336,51 @@ class base
 	}
 
 	/**
-		@brief		Filter for admin_init.
-		@since		20130416
-	**/
-	public function admin_init()
-	{
-		$class_name = get_class( $this );
-		if ( isset($_POST[ $class_name ]['uninstall']) )
-		{
-			if ( isset($_POST[ $class_name ]['sure']) )
-			{
-				$this->uninstall_internal();
-				$this->deactivate_me();
-				if ($this->is_network)
-					wp_redirect( 'ms-admin.php' );
-				else
-					wp_redirect( 'index.php' );
-				exit;
-			}
-		}
-	}
-
-	/**
 		@brief		Shows the uninstall form.
 		@since		20130416
 	**/
 	public function admin_uninstall()
 	{
-		$form = $this->form();
+		$form = $this->form2();
 
-		if (isset($_POST[ get_class($this) ]['uninstall']))
-			if (!isset($_POST['sure']))
-				$this->error_( 'You have to check the checkbox in order to uninstall the plugin.' );
+		$prefix = get_class($this);
 
-		$nameprefix = '['.get_class($this).']';
-		$inputs = array(
-			'sure' => array(
-				'name' => 'sure',
-				'nameprefix' => $nameprefix,
-				'type' => 'checkbox',
-				'label' => $this->_( "Yes, I'm sure I want to remove all the plugin tables and settings." ),
-			),
-			'uninstall' => array(
-				'name' => 'uninstall',
-				'nameprefix' => $nameprefix,
-				'type' => 'submit',
-				'css_class' => 'button-primary',
-				'value' => $this->_( 'Uninstall plugin' ),
-			),
-		);
+		$form->checkbox( 'sure' )
+			->label_( "Yes, I'm sure I want to remove all the plugin tables and settings." )
+			->prefix( $prefix )
+			->required();
+		$form->primary_button( 'uninstall' )
+			->prefix( $prefix )
+			->value_( "Uninstall plugin" );
+
+		if ( $form->is_posting() )
+		{
+			$form->post();
+			if ( $form->input( 'uninstall' )->pressed() )
+			{
+				if ( $form->input( 'sure' )->get_post_value() != 'on' )
+					$this->error_( 'You have to check the checkbox in order to uninstall the plugin.' );
+				else
+				{
+					$this->uninstall_internal();
+					$this->deactivate_me();
+					if( is_network_admin() )
+						$url ='ms-admin.php';
+					else
+						$url ='index.php';
+					$this->message_( 'The plugin an all associated settings and database tables have been removed. Please <a href="%s" title="This link will take you to the index page">follow this link to complete the uninstallation procedure</a>.',
+						$url );
+					return;
+				}
+			}
+		}
 
 		echo $form->start().'
 			<p>' . $this->_( 'This page will remove all the plugin tables and settings from the database and then deactivate the plugin.' ) . '</p>
 
-			<p>'.$form->make_input($inputs['sure']).' '.$form->make_label($inputs['sure']).'</p>
+			<p>' . $form->input( 'sure' ) . '</p>
 
-			<p>'.$form->make_input($inputs['uninstall']).'</p>
+			<p>' . $form->input( 'uninstall' ) . '</p>
 
 			'.$form->stop();
 	}
@@ -401,9 +409,9 @@ class base
 	**/
 	public function deactivate_me()
 	{
-		deactivate_plugins(array(
+		deactivate_plugins( [
 			$this->paths['filename_from_plugin_directory']
-		));
+		] );
 	}
 
 	/**
@@ -695,10 +703,9 @@ class base
 	**/
 	public function deregister_options()
 	{
-		foreach($this->options as $option=>$value)
-		{
-			$this->delete_option($option);
-		}
+		if ( isset( $this->options ) )
+			foreach($this->options as $option=>$value)
+				$this->delete_option($option);
 
 		foreach($this->local_options as $option=>$value)
 		{
@@ -1826,6 +1833,28 @@ class base
 	public static function time()
 	{
 		return current_time('timestamp');
+	}
+
+	/**
+		@brief		Displays a time difference as a human-readable string.
+		@param		$current		"2010-04-12 15:19" or a UNIX timestamp.
+		@param		$reference		An optional timestamp to base time difference on, if not now.
+		@param		$wrap			Wrap the real time in a span with a title?
+		@return						"28 minutes"
+		@since		20130810
+	**/
+	public static function time_to_string( $current, $reference = null, $wrap = false )
+	{
+		if ($current == '')
+			return '';
+		if ( ! is_int( $current ) )
+			$current = strtotime( $current );
+		if ( $reference === null )
+			$reference = current_time('timestamp');
+		$diff = human_time_diff( $current, $reference );
+		if ( $wrap )
+			$diff = '<span title="'.$current.'">' . $diff . '</span>';
+		return $diff;
 	}
 
 	/**

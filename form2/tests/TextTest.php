@@ -127,4 +127,12 @@ class TextTest extends TestCase
 		$text->value( 'smörgåsbord' );
 		$this->assertEquals( 'SMÖRGÅSBORD', $text->get_value() );
 	}
+
+	public function test_plaintext_filter()
+	{
+		$text = $this->form()->text( 'plaintext' )->plaintext()->value( '<h1>Great</h1>' );
+		$this->assertEquals( 'Great', $text->get_value() );
+		$text = $this->form()->text( 'plaintext' )->plaintext()->value( '<h1>Gr&eat</h1>' );
+		$this->assertEquals( 'Gr&amp;eat', $text->get_value() );
+	}
 }

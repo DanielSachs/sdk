@@ -18,11 +18,6 @@ abstract class option
 	public $self_closing = false;
 	public $tag = 'option';
 
-	public function __toString()
-	{
-		return $this->indent() . $this->open_tag() . $this->label . $this->close_tag() . "\n";
-	}
-
 	public abstract function check();
 
 	public function indentation()
@@ -44,4 +39,3 @@ abstract class option
 		return $this;
 	}
 }
-

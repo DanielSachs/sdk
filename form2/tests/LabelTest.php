@@ -25,8 +25,8 @@ class LabelTest extends TestCase
 	**/
 	public function test_select_labels()
 	{
-		$select = $this->form()->select( 'select' )
-			->label('Select label' )
+		$select = $this->form()->select( 'LabelTest' );
+		$select->label( 'Select label' )
 			->option( 'Option label', 'optionlabel' );
 		$options = $select->display_input();
 		$this->assertStringDoesNotContain( '</label>', $options );

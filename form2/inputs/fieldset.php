@@ -6,7 +6,7 @@ namespace plainview\form2\inputs;
 	@brief		A fieldset / input container.
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130524
+	@version	20130805
 **/
 class fieldset
 	extends input
@@ -19,14 +19,32 @@ class fieldset
 
 	public $tag = 'fieldset';
 
+	public function __toString_before_container()
+	{
+		$this->clear_attribute( 'name' );
+	}
+
 	public function __toString_before_inputs()
 	{
-		return $this->legend;
+		$i = clone( $this );
+		// Which one should we display? The legend's label or the fieldset's label?
+		if ( $i->label->content != '' )
+			$i->legend->label = $i->label;
+		return $i->legend;
 	}
 
 	public function _construct()
 	{
 		$this->legend = new legend( $this );
+	}
+
+	/**
+		@brief		Fieldsets don't have labels.
+		@since		20130805
+	**/
+	public function display_label()
+	{
+		return '';
 	}
 
 	/**

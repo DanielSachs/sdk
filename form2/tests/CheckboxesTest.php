@@ -16,33 +16,59 @@ class CheckboxesTest extends TestCase
 
 	public function test_ids()
 	{
-		$cbs = $this->checkboxes();
-		$this->assertStringContains( 'id="checkboxestest_cb1"', $cbs->display_input() );
-		$this->assertStringContains( 'id="checkboxestest_cb2"', $cbs->display_input() );
-		$this->assertStringContains( 'id="checkboxestest_cb3"', $cbs->display_input() );
-		$this->assertStringDoesNotContain( 'id="checkboxestest"', $cbs->display_input() );
+		$cbs = $this->checkboxes() . '';
+		$this->assertStringContainsRegExp( '/id=".*checkboxestest_cb1"/', $cbs );
+		$this->assertStringContainsRegExp( '/id=".*checkboxestest_cb2"/', $cbs );
+		$this->assertStringContainsRegExp( '/id=".*checkboxestest_cb3"/', $cbs );
+		$this->assertStringDoesNotContainRegExp( '/input.*id=".*checkboxestest"/', $cbs );
 	}
 
 	public function test_names()
 	{
 		$cbs = $this->checkboxes();
-		$this->assertStringContains( 'name="checkboxestest_cb1"', $cbs->display_input() );
-		$this->assertStringContains( 'name="checkboxestest_cb2"', $cbs->display_input() );
-		$this->assertStringContains( 'name="checkboxestest_cb3"', $cbs->display_input() );
-		$this->assertStringDoesNotContain( 'name="checkboxestest"', $cbs->display_input() );
+		$this->assertStringContains( 'name="checkboxestest_cb1"', $cbs );
+		$this->assertStringContains( 'name="checkboxestest_cb2"', $cbs );
+		$this->assertStringContains( 'name="checkboxestest_cb3"', $cbs );
+		$this->assertStringDoesNotContainRegExp( '/\<input.*name="checkboxestest"/', $cbs );
+	}
+
+	public function test_named_checkbox()
+	{
+		$cbs = $this->checkboxes();
+		// Try to extract a named checkbox out of the checkboxes.
+		// Here we know that the checkboxes input is actually a fieldset and that all checkboxes are named CHECKBOXESNAME_CHECKBOXNAME.
+		// Meaning: checkboxestest_cb1 instead of just cb1.
+		$label = $cbs->input( 'checkboxestest_cb1' )->get_label()->get_content();
+		$this->assertEquals( 'Checkbox 1', $label );
 	}
 
 	public function test_checked()
 	{
 		$cbs = $this->checkboxes();
-		$this->assertStringContainsRegexp( '/\.*\<input.*\<input.*checked=\"checked\".*cb3/s', $cbs->display_input() );
+		$this->assertStringContainsRegexp( '/\.*\<input.*\<input.*checked=\"checked\".*cb3.*\<input/s', $cbs );
 	}
 
 	public function test_labels()
 	{
 		$cbs = $this->checkboxes();
-		$this->assertEquals( '<div>Checkboxes</div>', $cbs->display_label() );
-		$this->assertStringContains( '<label for="checkboxestest_cb1">Checkbox 1</label>', $cbs->display_input() );
+		$this->assertStringContains( '<legend>Checkboxes</legend>', $cbs );
+		$this->assertStringContainsRegExp( '/\<label.*for=".*checkboxestest_cb1".*Checkbox 1.*\/label\>/', $cbs );
+	}
+
+	public function test_prefix_is_inherited_to_each_checkbox()
+	{
+		$cbs = $this->checkboxes();
+		$cbs->prefix( 'testprefix' );
+		$matches = preg_match_all( '/name="testprefix\[checkboxestest_/', $cbs );
+		$this->assertEquals( 3, $matches );
+	}
+
+	public function test_prefixes_are_inherited_to_each_checkbox()
+	{
+		$cbs = $this->checkboxes();
+		$cbs->prefix( 'testprefix1', 'testprefix2' );
+		$matches = preg_match_all( '/name="testprefix1\[testprefix2\]\[checkboxestest_/', $cbs );
+		$this->assertEquals( 3, $matches );
 	}
 }
 

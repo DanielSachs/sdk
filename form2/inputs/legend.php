@@ -29,9 +29,9 @@ class legend
 
 	public function __toString()
 	{
-		if ( $this->label == '' )
+		if ( $this->label->content == '' )
 			return '';
-		return $this->indent() . $this->open_tag() . $this->label . $this->close_tag() . "\n";
+		return $this->indent() . $this->open_tag() . $this->label->content . $this->close_tag() . "\n";
 	}
 
 	/**

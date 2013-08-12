@@ -29,11 +29,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
 		@brief		Check if a string contains a regexp
 		@since		20130718
 	**/
-	public function assertStringContainsRegexp( $regexp, $haystack )
+	public function assertStringContainsRegexp( $regexp, $string )
 	{
-		$matches = [];
-		preg_match( $regexp, $haystack, $matches );
-		$this->assertTrue( count( $matches ) > 0 );
+		$this->assertTrue( $this->string_contains_regexp( $regexp, $string ) );
 	}
 
 	/**
@@ -43,5 +41,23 @@ class TestCase extends \PHPUnit_Framework_TestCase
 	public function assertStringDoesNotContain( $needle, $haystack )
 	{
 		$this->assertTrue( strpos( $haystack, $needle ) === false );
+	}
+
+	/**
+		@brief		Check if a string does not contain a regexp
+		@since		20130718
+	**/
+	public function assertStringDoesNotContainRegexp( $regexp, $string )
+	{
+		$this->assertFalse( $this->string_contains_regexp( $regexp, $string ) );
+	}
+
+	/**
+		@brief		Check if a string contains a regexp.
+		@since		20130805
+	**/
+	public function string_contains_regexp( $regexp, $string )
+	{
+		return preg_match_all( $regexp, $string ) > 0;
 	}
 }

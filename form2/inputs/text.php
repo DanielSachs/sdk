@@ -7,7 +7,7 @@ namespace plainview\form2\inputs;
 	@details	Is the parent class of many text-related inputs.
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130712
+	@version	20130807
 **/
 class text
 	extends input
@@ -18,6 +18,7 @@ class text
 	use traits\size;
 	use traits\value;
 
+	public $plaintext = false;
 	public $lowercase = false;
 	public $trim = false;
 	public $type = 'text';
@@ -35,6 +36,22 @@ class text
 		{
 			if ( $this->trim )
 				$value = trim( $value );
+			return $value;
+		});
+		return $this;
+	}
+
+	/**
+		@brief		Remove all tags from the string.
+		@param		bool		$value		True to strip the string of tags.
+		@since		20130807
+	**/
+	public function plaintext( $value = true )
+	{
+		$this->plaintext = $value;
+		$this->add_value_filter( 'text.plaintext', function( $value )
+		{
+			$value = strip_tags( $value );
 			return $value;
 		});
 		return $this;

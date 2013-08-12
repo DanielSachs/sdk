@@ -9,10 +9,9 @@ namespace plainview\form2\inputs;
 	@version	20130730
 **/
 class select
-	extends input
+	extends optionsinput
 	implements \Countable
 {
-	use traits\options;
 	use traits\size;
 	use traits\value
 	{
@@ -138,7 +137,9 @@ class select
 
 	public function new_option( $o )
 	{
-		$input = new selectoption( $o->container, $o->container->get_attribute( 'name' ) );
+		$input = new selectoption( $o->container, $o->name );
+		$input->set_attribute( 'value', $o->value );
+		$input->label( $o->label );
 		return $input;
 	}
 

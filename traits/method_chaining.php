@@ -7,7 +7,7 @@ namespace plainview\traits;
 	@since		20130714
 	@version	20130714
 **/
-trait methodchaining
+trait method_chaining
 {
 	public function set_key( $key, $value )
 	{

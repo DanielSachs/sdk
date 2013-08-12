@@ -22,6 +22,7 @@ class description
 		$this->input = $input;
 		$this->label = new label( $input );
 		$this->container = $this->input->container;
+		$this->id( $this->input->make_id() . '_description' );
 		$this->css_class( 'description' );
 	}
 

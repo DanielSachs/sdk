@@ -10,8 +10,7 @@ namespace plainview\form2\inputs\traits;
 **/
 trait options
 {
-	public $options = array();
-
+/*
 	public function __toString()
 	{
 		$input = clone( $this );
@@ -19,7 +18,7 @@ trait options
 		$r = $input->display_label() . $input->options_to_inputs();
 		return $r;
 	}
-
+*/
 	/**
 		@brief		Return or create an option.
 		@details
@@ -53,20 +52,16 @@ trait options
 	public function option( $p1, $p2 = null )
 	{
 		if ( $p2 === null )
-			if ( isset( $this->options[ $p1 ] ) )
-				return $this->options[ $p1 ];
-			else
-				return false;
+			return $this->get_option( $p1 );
 		$o = new \stdClass();
 		$o->container = $this->container;
+		$o->id = $this->get_id() . '_' . $p2;
+		$o->container_name = $this->get_attribute( 'name' );
 		$o->name = $p2;
 		$o->label = $p1;
 		$o->value = $p2;
 		$option = $this->new_option( $o );
-		$option->content = $p1;
-		$option->value( $p2 );
-		$this->options[ $p2 ] = $option;
-		return $this;
+		return $this->add_option( $option );
 	}
 
 	/**
@@ -140,14 +135,17 @@ trait options
 		$name = $this->_name;
 		$class = preg_replace( '/.*\\\\/', '', get_class( $this ) );
 		$r .= '<div class="' . $class . ' ' . $name . '">';
-		foreach( $this->options as $index => $option )
+		foreach( $this->get_options() as $index => $option )
 		{
 			$option_value = $option->get_attribute( 'value' );
 
 			$o = new \stdClass();
 			$o->container = $this->container;
 			$o->id = $name . '_' . $index;
+			// Checkboxes use name_id, but radios must have the same name for all.
 			$o->name = $name . '_' . $index;
+			// Here's for the radios.
+			$o->container_name = $name;
 			$o->value = $option_value;
 			$input = $this->new_option( $o );
 			$input->check( $option->is_checked() );
@@ -182,7 +180,7 @@ trait options
 	public function use_post_value()
 	{
 		// Unset the checked status of all inputs.
-		foreach( $this->options as $option )
+		foreach( $this->get_options() as $option )
 			$option->check( false );
 		$value = $this->get_post_value();
 		$this->value( $value );
@@ -200,9 +198,11 @@ trait options
 	{
 		$values = func_get_args();
 		foreach ( $values as $value )
-			foreach( $this->options as $option )
+			foreach( $this->get_options() as $option )
+			{
 				if ( $option->get_value() == $value )
 					$option->check();
+			}
 		return $this;
 	}
 

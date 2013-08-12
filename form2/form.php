@@ -94,7 +94,12 @@ namespace plainview\form2;
 	Changelog
 	---------
 
-	- 20130718	Added unit testing. Just run phpunit in this directory. \
+	- 20130807	Added text plaintext() filter.
+	- 20130806	Radios and checkboxes are fieldsets. \n
+				Inputs are described using aria-describedby.
+	- 20130805	Added Radios text. Fixed radios names. \n
+				Added $form_version.
+	- 20130718	Added unit testing. Just run phpunit in this directory. \n
 				validates() automatically runs validate() if necessary. \n
 				set_post_value().
 	- 20130701	Hidden input is created using hidden_input(). \n
@@ -109,12 +114,19 @@ namespace plainview\form2;
 
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130606
+	@version	20130806
 **/
 class form
 {
 	use \plainview\html\element;
 	use inputs\traits\container;
+
+	/**
+		@brief		Version of the form object.
+		@var		$form_version
+		@since		20130805
+	**/
+	public static $form_version = 20130806;
 
 	/**
 		@brief		Has the form handled the POST array?

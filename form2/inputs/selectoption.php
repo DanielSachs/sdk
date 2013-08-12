@@ -18,7 +18,7 @@ class selectoption
 		$input = clone( $this );
 		// Options do not have IDs
 		$input->clear_attribute( 'id' );
-		return $input->indent() . $input->open_tag() . $input->content . $input->close_tag() . "\n";
+		return $input->indent() . $input->open_tag() . $input->label->content . $input->close_tag() . "\n";
 	}
 
 	public function check( $checked = true )

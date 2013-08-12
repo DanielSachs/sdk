@@ -13,6 +13,11 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130812		Version bump.
+	- 20130809		wordpress\tabs.
+	- 20130809		wordpress, human_time(), human_time_span().
+	- 20130807		form2
+	- 20130806		form2
 	- 20130803		table.
 	- 20130730		form2 select count(), breadcrumbs, table.
 	- 20130729		html\element
@@ -44,7 +49,7 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130730
+	@version		20130812
 **/
 class base
 {
@@ -60,8 +65,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130730;
-
+	protected $sdk_version = 20130812;
 	/**
 		@brief		Constructor.
 		@since		20130425
@@ -282,6 +286,19 @@ class base
 		return hash($type, $string);
 	}
 
+	/**
+		@brief		Output the unix time as a human-readable string.
+		@details
+
+		In order to aid in translation, use the various text_* keys in the options array.
+
+		See the source below for a list of keys to include.
+
+		@param		int			$current		Current timestamp.
+		@param		int			$reference		Reference timestamp, if not now.
+		@param		array		$options		Options.
+		@since		20130809
+	**/
 	public static function human_time( $current, $reference = null, $options = [] )
 	{
 		$options = \plainview\base::merge_objects( [
@@ -300,6 +317,7 @@ class base
 		if( ! is_int( $current ) )
 			$current = strtotime( $current );
 		$difference = abs( $reference - $current );
+		$seconds = round( $difference, 0 );
 		$minutes = round( $difference / 60, 0 );
 		$hours = round( $difference / ( 60 * 60 ), 0 );
 		$days = round( $difference / ( 60 * 60 * 24 ), 0 );
@@ -326,6 +344,18 @@ class base
 		else
 			return sprintf( $options->text_seconds, $seconds );
 	}
+
+	/**
+		@brief		Wrap the human time in a span with the computer time as the hover title.
+		@param		int			The current time (Y-m-d H:i:s)  to convert to human-readable time.
+		@return		string		A HTML string containing a span with a title, and the human-readable date within.
+		@since		20130809
+	**/
+	public function human_time_span( $current, $options = [] )
+	{
+		return sprintf( '<span title="%s">%s</span>', $current, $this->human_time( $current, null, $options ) );
+	}
+
 
 	/**
 		@brief		Implode an array in an HTML-friendly way.

@@ -9,11 +9,9 @@ namespace plainview\form2\inputs;
 	@version	20130730
 **/
 class selectoptgroup
-	extends input
+	extends optionsinput
 	implements \Countable
 {
-	use traits\options;
-
 	public $self_closing = false;
 	public $tag = 'optgroup';
 
@@ -57,7 +55,9 @@ class selectoptgroup
 
 	public function new_option( $o )
 	{
-		$input = new selectoption( $o->container, $o->container->get_attribute( 'name' ) );
+		$input = new selectoption( $o->container, $o->name );
+		$input->label( $o->label );
+		$input->value( $o->value );
 		return $input;
 	}
 
