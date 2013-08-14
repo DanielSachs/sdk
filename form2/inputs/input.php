@@ -76,7 +76,7 @@ class input
 			->css_class( 'form_item_' . $this->make_id() );
 
 		// It would be a good idea if the container could include information about the status of the input.
-		if ( ! $this->validates() )
+		if ( $this->has_validation_errors() )
 			$div->css_class( 'does_not_validate' );
 		if ( $this->is_required() )
 			$div->css_class( 'required' );

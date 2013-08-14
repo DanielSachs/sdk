@@ -9,11 +9,12 @@ namespace plainview\form2\inputs\traits;
 	Changelog
 	---------
 
+	20130814	has_validation_errors()
 	20130604	validate_required() has better checking.
 
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130524
+	@version	20130814
 **/
 trait validation
 {
@@ -98,6 +99,20 @@ trait validation
 	public function has_validated()
 	{
 		return $this->has_validated;
+	}
+
+	/**
+		@brief		Convenience function to query if the input has any validation errors.
+		@details
+
+		This method does not do any validation. To validate + query the result at the same time, use validates().
+		@return		bool		True if the input has validation errors.
+		@see		validates()
+		@since		20130814
+	**/
+	public function has_validation_errors()
+	{
+		return count( $this->get_validation_errors() ) > 0;
 	}
 
 	/**

@@ -7,6 +7,7 @@ namespace plainview\form2\inputs\traits;
 	@details	Values are saved safe.
 
 	If you wish to retrieve the value, run a \plainview\form2\form::unfilter_text() on it to return it to its original status.
+
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
 	@version	20130814
@@ -166,6 +167,9 @@ trait value
 	**/
 	public function use_post_value()
 	{
+		// Disabled and readonlys will not find their values in the _POST.
+		if ( $this->is_readonly() || $this->is_disabled() )
+			return $this;
 		$value = $this->get_post_value();
 		$value = $this->apply_value_filters( $value );
 		$this->value( $value );
