@@ -9,7 +9,7 @@ namespace plainview\form2\inputs\traits;
 	If you wish to retrieve the value, run a \plainview\form2\form::unfilter_text() on it to return it to its original status.
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130712
+	@version	20130814
 **/
 trait value
 {
@@ -18,16 +18,24 @@ trait value
 
 	/**
 		@brief		Adds a value filter.
-		@details	Value filters are functions that filter the value before setting it.
-		@param		string		$name		Brief name of the filter function.
-		@param		closure		$function	Function that takes the value and returns it filtered.
+		@details
+
+		Value filters are functions that filter the value before setting it.
+
+		The $name parameter can either be a string containing the name of the function ("number" will call value_filter_number) or an array of [ class, function ].
+
+		@param		string		$name		Brief name of the filter function. The method value_filter_$name is called.
 		@return		$this		Method chaining.
 		@see		apply_value_filters()
 		@see		remove_value_filter()
 		@since		20130712
 	**/
-	public function add_value_filter( $name, $function )
+	public function add_value_filter( $function )
 	{
+		if ( is_array( $function ) )
+			$name = get_class( $function[0] );
+		else
+			$name = $function;
 		$this->value_filters[ $name ] = $function;
 		return $this;
 	}
@@ -42,8 +50,14 @@ trait value
 	**/
 	public function apply_value_filters( $value )
 	{
-		foreach( $this->value_filters as $value_filter )
-			$value = call_user_func( $value_filter, $value );
+		foreach( $this->value_filters as $name )
+		{
+			if ( is_array( $name ) )
+				$callable = $name;
+			else
+				$callable = [ $this, 'value_filter_' . $name ];
+			$value = call_user_func( $callable, $value );
+		}
 		return $value;
 	}
 
