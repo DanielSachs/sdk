@@ -94,6 +94,7 @@ namespace plainview\form2;
 	Changelog
 	---------
 
+	- 20130815	input->get_display_div.
 	- 20130814	Value filters are functions, not closures, which enables serializing.
 	- 20130807	Added text plaintext() filter.
 	- 20130806	Radios and checkboxes are fieldsets. \n
