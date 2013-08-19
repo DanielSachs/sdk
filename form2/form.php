@@ -94,6 +94,7 @@ namespace plainview\form2;
 	Changelog
 	---------
 
+	- 20130819	Validation errors now have the input as the container.
 	- 20130815	input->get_display_div.
 	- 20130814	Value filters are functions, not closures, which enables serializing.
 	- 20130807	Added text plaintext() filter.
@@ -116,7 +117,7 @@ namespace plainview\form2;
 
 	@author		Edward Plainview <edward@plainview.se>
 	@copyright	GPL v3
-	@version	20130806
+	@version	20130819
 **/
 class form
 {
@@ -128,7 +129,7 @@ class form
 		@var		$form_version
 		@since		20130805
 	**/
-	public static $form_version = 20130806;
+	public static $form_version = 20130819;
 
 	/**
 		@brief		Has the form handled the POST array?

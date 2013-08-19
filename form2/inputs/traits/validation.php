@@ -133,7 +133,7 @@ trait validation
 	**/
 	public function validation_error()
 	{
-		$error = new \plainview\form2\validation\error( $this->container );
+		$error = new \plainview\form2\validation\error( $this );
 		$this->add_validation_error( $error );
 		return $error;
 	}
