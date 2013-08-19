@@ -94,7 +94,7 @@ namespace plainview\form2;
 	Changelog
 	---------
 
-	- 20130819	Validation errors now have the input as the container.
+	- 20130819	Validation errors now have the input as the container. Radios required() fixed.
 	- 20130815	input->get_display_div.
 	- 20130814	Value filters are functions, not closures, which enables serializing.
 	- 20130807	Added text plaintext() filter.
