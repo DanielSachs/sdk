@@ -368,8 +368,9 @@ class base
 						$url ='ms-admin.php';
 					else
 						$url ='index.php';
-					$this->message_( 'The plugin an all associated settings and database tables have been removed. Please <a href="%s" title="This link will take you to the index page">follow this link to complete the uninstallation procedure</a>.',
-						$url );
+					$this->message_( 'The plugin and all associated settings and database tables have been removed. Please %sfollow this link to complete the uninstallation procedure%s.',
+						sprintf( '<a href="%s" title="%s">', $url, $this->_( 'This link will take you to the index page' ) ),
+						'</a>');
 					return;
 				}
 			}
@@ -1169,6 +1170,8 @@ class base
 		$files = array_merge( array(
 			basename( $this->paths[ '__FILE__' ] ),									// subclass.php
 			str_replace( $basedir, '', dirname( dirname( __FILE__ ) ) . '/*php' ),	// plainview/*php
+			str_replace( $basedir, '', dirname( dirname( __FILE__ ) ) . '/form2/inputs/*php' ),
+			str_replace( $basedir, '', dirname( dirname( __FILE__ ) ) . '/form2/inputs/traits/*php' ),
 			str_replace( $basedir, '', dirname( __FILE__ ) . '/*php' ),				// plainview_sdk/wordpress/*.php
 		), $this->pot_files() );
 
@@ -1179,6 +1182,7 @@ class base
 			'error_',
 			'message_',
 			'heading_',		// tabs
+			'label_',		// form2
 			'name_',		// tabs
 			'option_',		// form2
 			'p_',
