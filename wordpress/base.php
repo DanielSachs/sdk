@@ -225,8 +225,8 @@ class base
 			{
 				$this->paths = array(
 					'__FILE__' => $filename,
-					'name' => get_class($this),
-					'filename' => basename($filename),
+					'name' => get_class( $this ),
+					'filename' => basename( $filename ),
 				);
 				$this->do_cli();
 			}
@@ -244,12 +244,12 @@ class base
 
 		$this->paths = array(
 			'__FILE__' => $filename,
-			'name' => get_class($this),
-			'filename' => basename($filename),
-			'filename_from_plugin_directory' => basename(dirname($filename)) . '/' . basename($filename),
-			'path_from_plugin_directory' => basename(dirname($filename)),
-			'path_from_base_directory' => PLUGINDIR . '/' . basename(dirname($filename)),
-			'url' => WP_PLUGIN_URL . '/' . basename(dirname($filename)),
+			'name' => get_class( $this ),
+			'filename' => basename( $filename ),
+			'filename_from_plugin_directory' => basename( dirname( $filename ) ) . '/' . basename( $filename ),
+			'path_from_plugin_directory' => basename( dirname( $filename ) ),
+			'path_from_base_directory' => PLUGINDIR . '/' . basename( dirname( $filename ) ),
+			'url' => WP_PLUGIN_URL . '/' . basename( dirname( $filename ) ),
 		);
 
 		if ( $this->sdk_version_required > $this->sdk_version )
@@ -259,8 +259,8 @@ class base
 				dirname( __FILE__ )
 			) );
 
-		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal') );
-		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal') );
+		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal' ) );
+		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal' ) );
 
 		$this->_construct();
 	}
@@ -343,7 +343,7 @@ class base
 	{
 		$form = $this->form2();
 
-		$prefix = get_class($this);
+		$prefix = get_class( $this );
 
 		$form->checkbox( 'sure' )
 			->label_( "Yes, I'm sure I want to remove all the plugin tables and settings." )
@@ -370,7 +370,7 @@ class base
 						$url ='index.php';
 					$this->message_( 'The plugin and all associated settings and database tables have been removed. Please %sfollow this link to complete the uninstallation procedure%s.',
 						sprintf( '<a href="%s" title="%s">', $url, $this->_( 'This link will take you to the index page' ) ),
-						'</a>');
+						'</a>' );
 					return;
 				}
 			}
@@ -424,14 +424,14 @@ class base
 					Optional domain.
 		@since		20130416
 	**/
-	public function load_language($domain = '')
+	public function load_language( $domain = '' )
 	{
-		if ( $domain != '')
+		if ( $domain != '' )
 			$this->language_domain = $domain;
 
-		if ($this->language_domain == '')
+		if ( $this->language_domain == '' )
 			$this->language_domain = str_replace( '.php', '', $this->paths['filename'] );
-		load_plugin_textdomain($this->language_domain, false, $this->paths['path_from_plugin_directory'] . '/lang');
+		load_plugin_textdomain( $this->language_domain, false, $this->paths[ 'path_from_plugin_directory' ] . '/lang' );
 	}
 
 	/**
@@ -525,7 +525,7 @@ class base
 		@return					True if role is at least $role.
 		@since		20130416
 	**/
-	public function role_at_least($role)
+	public function role_at_least( $role )
 	{
 		global $current_user;
 		wp_get_current_user();
@@ -533,10 +533,10 @@ class base
 		if ( $current_user === null )
 		    return false;
 
-		if ($role == '')
+		if ( $role == '' )
 			return true;
 
-		if (function_exists('is_super_admin') && is_super_admin() )
+		if (function_exists( 'is_super_admin' ) && is_super_admin() )
 			return true;
 
 		if ( $role == 'super_admin' )
@@ -577,14 +577,14 @@ class base
 					The message to display.
 		@since		20130416
 	**/
-	public function display_message($type, $string)
+	public function display_message( $type, $string )
 	{
 		// If this string has html codes, then output it as it.
-		$stripped = strip_tags($string);
-		if (strlen($stripped) == strlen($string))
+		$stripped = strip_tags( $string );
+		if ( strlen( $stripped ) == strlen( $string ) )
 		{
 			$string = explode("\n", $string);
-			$string = implode('</p><p>', $string);
+			$string = implode( '</p><p>', $string);
 		}
 		echo '<div class="message_box '.$type.'">
 			<p class="message_timestamp">'.$this->now().'</p>
@@ -652,13 +652,13 @@ class base
 		@param		$option		Name of option to delete.
 		@since		20130416
 	**/
-	public function delete_option($option)
+	public function delete_option( $option )
 	{
-		$option = $this->fix_option_name($option);
-		if ($this->is_network)
-			delete_site_option($option);
+		$option = $this->fix_option_name( $option );
+		if ( $this->is_network )
+			delete_site_option( $option );
 		else
-			delete_option($option);
+			delete_option( $option );
 	}
 
 	/**
@@ -667,10 +667,10 @@ class base
 		@param		$option		Name of option to delete.
 		@since		20130416
 	**/
-	public function delete_local_option($option)
+	public function delete_local_option( $option )
 	{
-		$option = $this->fix_option_name($option);
-		delete_option($option);
+		$option = $this->fix_option_name( $option );
+		delete_option( $option );
 	}
 
 	/**
@@ -679,10 +679,10 @@ class base
 		@param		$option		Name of option to delete.
 		@since		20130416
 	**/
-	public function delete_site_option($option)
+	public function delete_site_option( $option )
 	{
-		$option = $this->fix_option_name($option);
-		delete_site_option($option);
+		$option = $this->fix_option_name( $option );
+		delete_site_option( $option );
 	}
 
 	/**
@@ -693,7 +693,7 @@ class base
 		@param		$option		Option name to fix.
 		@since		20130416
 	**/
-	public function fix_option_name($option)
+	public function fix_option_name( $option )
 	{
 		return $this->paths['name'] . '_' . $option;
 	}
@@ -705,27 +705,27 @@ class base
 	public function deregister_options()
 	{
 		if ( isset( $this->options ) )
-			foreach($this->options as $option=>$value)
-				$this->delete_option($option);
+			foreach( $this->options as $option=>$value )
+				$this->delete_option( $option );
 
-		foreach($this->local_options as $option=>$value)
+		foreach( $this->local_options as $option=>$value )
 		{
-			$option = $this->fix_option_name($option);
-			delete_option($option);
+			$option = $this->fix_option_name( $option );
+			delete_option( $option );
 		}
 
-		if ($this->is_network)
-			foreach($this->site_options as $option=>$value)
+		if ( $this->is_network )
+			foreach( $this->site_options as $option=>$value )
 			{
-				$option = $this->fix_option_name($option);
-				delete_site_option($option);
+				$option = $this->fix_option_name( $option );
+				delete_site_option( $option );
 			}
 		else
 		{
-			foreach($this->site_options as $option=>$value)
+			foreach( $this->site_options as $option=>$value )
 			{
-				$option = $this->fix_option_name($option);
-				delete_option($option, $value);
+				$option = $this->fix_option_name( $option );
+				delete_option( $option, $value );
 			}
 		}
 	}
@@ -739,13 +739,13 @@ class base
 		@return					Value.
 		@since		20130416
 	**/
-	public function get_option($option)
+	public function get_option( $option )
 	{
-		$option = $this->fix_option_name($option);
-		if ($this->is_network)
-			return get_site_option($option);
+		$option = $this->fix_option_name( $option );
+		if ( $this->is_network )
+			return get_site_option( $option );
 		else
-			return get_option($option);
+			return get_option( $option );
 	}
 
 	/**
@@ -756,10 +756,10 @@ class base
 		@return						Value.
 		@since		20130416
 	**/
-	public function get_local_option($option, $default = false)
+	public function get_local_option( $option, $default = false)
 	{
-		$option = $this->fix_option_name($option);
-		$value = get_option($option);
+		$option = $this->fix_option_name( $option );
+		$value = get_option( $option );
 		if ( $value === false )
 			return $default;
 		else
@@ -774,10 +774,10 @@ class base
 		@return					Value.
 		@since		20130416
 	**/
-	public function get_site_option($option, $default = false)
+	public function get_site_option( $option, $default = false )
 	{
-		$option = $this->fix_option_name($option);
-		$value = get_site_option($option);
+		$option = $this->fix_option_name( $option );
+		$value = get_site_option( $option );
 		if ( $value === false )
 			return $default;
 		else
@@ -790,36 +790,29 @@ class base
 	**/
 	public function register_options()
 	{
-/*
-		foreach($this->options as $option=>$value)
+		foreach( $this->local_options as $option=>$value )
 		{
-			if ($this->get_option($option) === false)
-				$this->update_option($option, $value);
-		}
-*/
-		foreach($this->local_options as $option=>$value)
-		{
-			$option = $this->fix_option_name($option);
-			if (get_option($option) === false)
-				update_option($option, $value);
+			$option = $this->fix_option_name( $option );
+			if (get_option( $option ) === false)
+				update_option( $option, $value );
 		}
 
-		if ($this->is_network)
+		if ( $this->is_network )
 		{
-			foreach($this->site_options as $option=>$value)
+			foreach( $this->site_options as $option=>$value )
 			{
-				$option = $this->fix_option_name($option);
-				if (get_site_option($option) === false)
-					update_site_option($option, $value);
+				$option = $this->fix_option_name( $option );
+				if ( get_site_option( $option ) === false )
+					update_site_option( $option, $value );
 			}
 		}
 		else
 		{
-			foreach($this->site_options as $option=>$value)
+			foreach( $this->site_options as $option=>$value )
 			{
-				$option = $this->fix_option_name($option);
-				if (get_option($option) === false)
-					update_option($option, $value);
+				$option = $this->fix_option_name( $option );
+				if (get_option( $option ) === false)
+					update_option( $option, $value );
 			}
 		}
 	}
@@ -833,13 +826,13 @@ class base
 		@param		$value		New value
 		@since		20130416
 	**/
-	public function update_option($option, $value)
+	public function update_option( $option, $value )
 	{
-		$option = $this->fix_option_name($option);
-		if ($this->is_network)
-			update_site_option($option, $value);
+		$option = $this->fix_option_name( $option );
+		if ( $this->is_network )
+			update_site_option( $option, $value );
 		else
-			update_option($option, $value);
+			update_option( $option, $value );
 	}
 
 	/**
@@ -849,10 +842,10 @@ class base
 		@param		$value		New value
 		@since		20130416
 	**/
-	public function update_local_option($option, $value)
+	public function update_local_option( $option, $value )
 	{
-		$option = $this->fix_option_name($option);
-		update_option($option, $value);
+		$option = $this->fix_option_name( $option );
+		update_option( $option, $value );
 	}
 
 	/**
@@ -862,10 +855,10 @@ class base
 		@param		$value		New value
 		@since		20130416
 	**/
-	public function update_site_option($option, $value)
+	public function update_site_option( $option, $value )
 	{
-		$option = $this->fix_option_name($option);
-		update_site_option($option, $value);
+		$option = $this->fix_option_name( $option );
+		update_site_option( $option, $value );
 	}
 
 	// -------------------------------------------------------------------------------------------------
@@ -880,12 +873,12 @@ class base
 		@return		array		The rows from the query.
 		@since		20130416
 	**/
-	public function query($query , $wpdb = null)
+	public function query( $query , $wpdb = null )
 	{
 		if ( $wpdb === null )
 			$wpdb = $this->wpdb;
 		$results = $wpdb->get_results( $query, 'ARRAY_A' );
-		return (is_array($results) ? $results : array());
+		return (is_array( $results) ? $results : array());
 	}
 
 	/**
@@ -895,10 +888,10 @@ class base
 		@return						Either the row as an array, or false if more than one row.
 		@since		20130416
 	**/
-	public function query_single($query)
+	public function query_single( $query)
 	{
-		$results = $this->wpdb->get_results($query, 'ARRAY_A');
-		if ( count($results) != 1)
+		$results = $this->wpdb->get_results( $query, 'ARRAY_A' );
+		if ( count( $results) != 1)
 			return false;
 		return $results[0];
 	}
@@ -910,9 +903,9 @@ class base
 		@return					The inserted ID.
 		@since		20130416
 	**/
-	public function query_insert_id($query)
+	public function query_insert_id( $query)
 	{
-		$this->wpdb->query($query);
+		$this->wpdb->query( $query);
 		return $this->wpdb->insert_id;
 	}
 
@@ -925,7 +918,7 @@ class base
 	**/
 	public function sql_encode( $object )
 	{
-		return base64_encode( serialize($object) );
+		return base64_encode( serialize( $object) );
 	}
 
 	/**
@@ -936,7 +929,7 @@ class base
 	**/
 	public function sql_decode( $string )
 	{
-		return unserialize( base64_decode($string) );
+		return unserialize( base64_decode( $string) );
 	}
 
 	/**
@@ -950,7 +943,7 @@ class base
 	{
 		$query = "SHOW TABLES LIKE '$table_name'";
 		$result = $this->query( $query );
-		return count($result) > 0;
+		return count( $result) > 0;
 	}
 
 	// -------------------------------------------------------------------------------------------------
@@ -1063,14 +1056,14 @@ class base
 		@return						"28 minutes ago"
 		@since		20130416
 	**/
-	public static function ago($time_string, $time = null)
+	public static function ago( $time_string, $time = null)
 	{
-		if ($time_string == '')
+		if ( $time_string == '' )
 			return '';
 		if ( $time === null )
-			$time = current_time('timestamp');
-		$diff = human_time_diff( strtotime($time_string), $time );
-		return '<span title="'.$time_string.'">' . sprintf( __('%s ago'), $diff) . '</span>';
+			$time = current_time( 'timestamp' );
+		$diff = human_time_diff( strtotime( $time_string), $time );
+		return '<span title="'.$time_string.'">' . sprintf( __( '%s ago' ), $diff) . '</span>';
 	}
 
 	/**
@@ -1148,12 +1141,12 @@ class base
 		// If there is a supplied table_row, use that.
 		if ( $o->row !== null )
 		{
-			$text = $form->make_input( $selected ) . '<span class="screen-reader-text">' . $this->_('Selected') . '</span>';
+			$text = $form->make_input( $selected ) . '<span class="screen-reader-text">' . $this->_( 'Selected' ) . '</span>';
 			$o->row->th( 'check_column_' . $o->row->id )->css_class( 'check-column' )->text( $text );
 		}
 
 		// Else return a manual table th.
-		return '<th class="check-column">' . $form->make_input( $selected ) . '<span class="screen-reader-text">' . $this->_('Selected') . '</span></th>';
+		return '<th class="check-column">' . $form->make_input( $selected ) . '<span class="screen-reader-text">' . $this->_( 'Selected' ) . '</span></th>';
 	}
 
 	/**
@@ -1384,29 +1377,29 @@ class base
 
 		// Resume support.
 /**
-		if ( isset($_SERVER['HTTP_RANGE']) )
+		if ( isset( $_SERVER['HTTP_RANGE']) )
 		{
 			if ( ! function_exists( 'download_416' ) )
 				function download_416( $filesize )
 				{
-					header('HTTP/1.1 416 Requested Range Not Satisfiable');
-					header('Content-Range: bytes *\/' . $o->filesize); // Required in 416.		*\/ *\/ *\/
+					header( 'HTTP/1.1 416 Requested Range Not Satisfiable' );
+					header( 'Content-Range: bytes *\/' . $o->filesize); // Required in 416.		*\/ *\/ *\/
 				}
 
-			if (!preg_match('^bytes=\d*-\d*(,\d*-\d*)*$', $_SERVER['HTTP_RANGE'])) {
+			if (!preg_match( '^bytes=\d*-\d*(,\d*-\d*)*$', $_SERVER['HTTP_RANGE'])) {
 			{
 				download_416( $o->filesize );
 				return;
 			}
 
-			$ranges = explode(',', substr($_SERVER['HTTP_RANGE'], 6) );
+			$ranges = explode( ',', substr( $_SERVER['HTTP_RANGE'], 6) );
 			foreach ( $ranges as $range )
 			{
-				$parts = explode('-', $range);
+				$parts = explode( '-', $range);
 				$start = $parts[0];		// If this is empty, this should be 0.
 				$end = $parts[1];		// If this is empty or greater than than filelength - 1, this should be filelength - 1.
 
-				if ($start > $end)
+				if ( $start > $end)
 				{
 					download_416( $o->filesize );
 					return;
@@ -1425,7 +1418,7 @@ class base
 
 		$chunksize = 65536;
 		$bytes_sent = 0;
-		$file = fopen($filepath, 'r');
+		$file = fopen( $filepath, 'r' );
 		if ( ! $file )
 			throw new \Exception( "File $filepath could not be opened for reading!" );
 /*
@@ -1463,9 +1456,9 @@ class base
 		@return		object					A new \\plainview\\wordpress\\form object.
 		@since		20130416
 	**/
-	public function form($options = array())
+	public function form( $options = array())
 	{
-		$options = array_merge($options, array('language' => preg_replace('/_.*/', '', get_locale())) );
+		$options = array_merge( $options, array( 'language' => preg_replace( '/_.*/', '', get_locale())) );
 
 		if ( ! class_exists( '\\plainview\\wordpress\\form' ) )
 			require_once( 'form.php' );
@@ -1502,7 +1495,7 @@ class base
 	**/
 	public static function now()
 	{
-		return date('Y-m-d H:i:s', current_time('timestamp'));
+		return date( 'Y-m-d H:i:s', current_time( 'timestamp' ));
 	}
 
 	/**
@@ -1531,7 +1524,7 @@ class base
 	public function p_( $string, $args = '' )
 	{
 		$args = func_get_args();
-		return wpautop( call_user_func_array( array( &$this, '_'), $args ) );
+		return wpautop( call_user_func_array( array( &$this, '_' ), $args ) );
 	}
 
 	/**
@@ -1755,8 +1748,8 @@ class base
 			$r .= '<ul class="subsubsub">';
 			$original_link = $_SERVER['REQUEST_URI'];
 
-			foreach($get as $key => $value)
-				if ( !in_array($key, $options->valid_get_keys) )
+			foreach( $get as $key => $value )
+				if ( !in_array( $key, $options->valid_get_keys) )
 					$original_link = remove_query_arg( $key, $original_link );
 
 			$index = 0;
@@ -1775,13 +1768,13 @@ class base
 				}
 
 				if ( isset( $options->count[ $tab_slug ] ) )
-					$text .= ' <span class="count">(' . $options->count[ $tab_slug ] . ')</span>';
+					$text .= ' <span class="count">( ' . $options->count[ $tab_slug ] . ' )</span>';
 
-				$separator = ( $index+1 < count($options->tabs) ? ' | ' : '' );
+				$separator = ( $index+1 < count( $options->tabs) ? ' | ' : '' );
 
 				$current = ( $tab_slug == $selected ? ' class="current"' : '' );
 
-				if ($current)
+				if ( $current)
 					$selected_index = $tab_slug;
 
 				$title = '';
@@ -1794,14 +1787,14 @@ class base
 			$r .= '</ul>';
 		}
 
-		if ( !isset($selected_index) )
+		if ( !isset( $selected_index) )
 			$selected_index = $options->default;
 
-		if ($options->display)
+		if ( $options->display)
 		{
 			ob_start();
 			echo '<div class="wrap">';
-			if ($options->display_tab_name)
+			if ( $options->display_tab_name)
 			{
 				if ( isset( $options->page_titles[ $selected_index ] ) )
 					$page_title = $options->page_titles[ $selected_index ];
@@ -1836,7 +1829,7 @@ class base
 	**/
 	public static function time()
 	{
-		return current_time('timestamp');
+		return current_time( 'timestamp' );
 	}
 
 	/**
@@ -1849,12 +1842,12 @@ class base
 	**/
 	public static function time_to_string( $current, $reference = null, $wrap = false )
 	{
-		if ($current == '')
+		if ( $current == '' )
 			return '';
 		if ( ! is_int( $current ) )
 			$current = strtotime( $current );
 		if ( $reference === null )
-			$reference = current_time('timestamp');
+			$reference = current_time( 'timestamp' );
 		$diff = human_time_diff( $current, $reference );
 		if ( $wrap )
 			$diff = '<span title="'.$current.'">' . $diff . '</span>';
