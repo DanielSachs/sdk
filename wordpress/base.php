@@ -124,7 +124,7 @@ class base
 		@since		20130416
 		@var		$local_options
 	**/
-	protected $local_options = array();
+	protected $local_options = [];
 
 	/**
 		@brief		Contains the paths to the plugin and other places of interest.
@@ -141,7 +141,7 @@ class base
 		@since		20130416
 		@var		$paths
 	**/
-	public $paths = array();
+	public $paths = [];
 
 	/**
 		@brief		The version of the plugin.
@@ -202,7 +202,7 @@ class base
 		@since		20130416
 		@var		$site_options
 	**/
-	protected $site_options = array();
+	protected $site_options = [];
 
 	/**
 		@brief		Construct the class.
@@ -262,6 +262,8 @@ class base
 		register_activation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'activate_internal' ) );
 		register_deactivation_hook( $this->paths['filename_from_plugin_directory'],	array( $this, 'deactivate_internal' ) );
 
+		$this->submenu_pages = [];
+
 		$this->_construct();
 	}
 
@@ -314,9 +316,6 @@ class base
 	**/
 	public function add_submenu_page()
 	{
-		if ( ! isset( $this->submenu_pages ) )
-			$this->submenu_pages = array();
-
 		$args = func_get_args();
 		$key = $args[ 2 ];
 		$key = $this->strtolower( $key );
@@ -510,7 +509,7 @@ class base
 	**/
 	public function roles_as_options()
 	{
-		$r = array();
+		$r = [];
 		if ( function_exists( 'is_super_admin' ) )
 			$r['super_admin'] = $this->_( 'Super admin' );
 		foreach( $this->roles as $role )
@@ -878,7 +877,7 @@ class base
 		if ( $wpdb === null )
 			$wpdb = $this->wpdb;
 		$results = $wpdb->get_results( $query, 'ARRAY_A' );
-		return (is_array( $results) ? $results : array());
+		return (is_array( $results) ? $results : []);
 	}
 
 	/**
@@ -1123,7 +1122,7 @@ class base
 		@return		mixed						Either nothing, if a table_row was supplied, or a string.
 		@since		20130416
 	**/
-	public function check_column_head( $options = array() )
+	public function check_column_head( $options = [] )
 	{
 		if ( is_a( $options, '\\plainview\\wordpress\\table\\row' ) )
 			$options = array( 'row' => $options );
@@ -1201,7 +1200,7 @@ class base
 		@param		array		$options	Array of options.
 		@since		20130416
 	**/
-	public function display_form_table( $inputs, $options = array() )
+	public function display_form_table( $inputs, $options = [] )
 	{
 		$options = \plainview\base::merge_objects( array(
 			'form' => null,
@@ -1287,7 +1286,7 @@ class base
 		@since		20130416
 		@todo		Have another look at this some time...
 	**/
-	public function download( $filepath, $options = array() )
+	public function download( $filepath, $options = [] )
 	{
 		if ( ! is_readable( $filepath ) )
 			throw new \Exception( "The file $filepath could not be read!" );
@@ -1456,7 +1455,7 @@ class base
 		@return		object					A new \\plainview\\wordpress\\form object.
 		@since		20130416
 	**/
-	public function form( $options = array())
+	public function form( $options = [])
 	{
 		$options = array_merge( $options, array( 'language' => preg_replace( '/_.*/', '', get_locale())) );
 
@@ -1485,7 +1484,7 @@ class base
 	**/
 	public function long_options()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -1534,7 +1533,7 @@ class base
 	**/
 	public function pot_files()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -1544,7 +1543,7 @@ class base
 	**/
 	public function pot_keywords()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -1704,7 +1703,7 @@ class base
 		@param		array		$options		See options.
 		@since		20130416
 	**/
-	public function tabs( $options = array() )
+	public function tabs( $options = [] )
 	{
 		if ( count( $options ) == 0 )
 		{
@@ -1713,18 +1712,18 @@ class base
 		}
 
 		$options = $this->merge_objects(array(
-			'count' =>			array(),			// Optional array of a strings to display after each tab name. Think: page counts.
+			'count' =>			[],			// Optional array of a strings to display after each tab name. Think: page counts.
 			'default' => null,						// Default tab index.
-			'descriptions' =>	array(),			// Descriptions (link titles) for each tab
+			'descriptions' =>	[],			// Descriptions (link titles) for each tab
 			'display' => true,						// Display the tabs or return them.
 			'display_tab_name' => true,				// If display==true, display the tab name.
 			'display_before_tab_name' => '<h2>',	// If display_tab_name==true, what to display before the tab name.
 			'display_after_tab_name' => '</h2>',	// If display_tab_name==true, what to display after the tab name.
-			'functions' =>	array(),				// Array of functions associated with each tab name.
+			'functions' =>	[],				// Array of functions associated with each tab name.
 			'get_key' =>	'tab',					// $_GET key to get the tab value from.
-			'page_titles' =>	array(),			// Array of page titles associated with each tab.
-			'tabs' =>			array(),			// Array of tab names
-			'valid_get_keys' => array(),			// Display only these _GET keys.
+			'page_titles' =>	[],			// Array of page titles associated with each tab.
+			'tabs' =>			[],			// Array of tab names
+			'valid_get_keys' => [],			// Display only these _GET keys.
 		), $options);
 
 		$get = $_GET;						// Work on a copy of the _GET.
