@@ -13,6 +13,7 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20130902		wordpress/tabs improvements.
 	- 20130826		breadcrumb fix.
 	- 20130825		is_private_ip()
 	- 20130820		form2
@@ -55,7 +56,7 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130826
+	@version		20130902
 **/
 class base
 {
@@ -71,7 +72,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130826;
+	protected $sdk_version = 20130902;
 	/**
 		@brief		Constructor.
 		@since		20130425
