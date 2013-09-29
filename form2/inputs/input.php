@@ -277,6 +277,9 @@ class input
 			->css_class( 'form_item_' . ( isset( $this->type ) ? $this->type : $this->tag ) )
 			->css_class( 'form_item_' . $this->make_id() );
 
+		// Get all the css classes for this input and add them to the div
+		$r->css_class( $this->get_attribute( 'class' ) );
+
 		// It would be a good idea if the container could include information about the status of the input.
 		if ( $this->has_validation_errors() )
 			$r->css_class( 'does_not_validate' );
