@@ -77,7 +77,8 @@ class input
 		$o->indent = $this->indent();
 		$o->input = $placeholders->input;
 		$o->label = $placeholders->label;
-		$o->description = $placeholders->description;
+		if ( ! $this->description->is_empty() )
+			$o->description = $placeholders->description;
 		$input_string = $this->assemble_input_string( $o );
 
 		$r = sprintf( '%s%s%s',
@@ -143,7 +144,7 @@ class input
 	**/
 	public function assemble_input_string( $o )
 	{
-		$r = '';
+		$r = '123';
 		$r .= $o->indent . $o->label . "\n";
 		$r .= $o->indent . $o->input . "\n";
 		if ( isset( $o->description ) )
