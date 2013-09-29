@@ -129,6 +129,7 @@ class form
 {
 	use \plainview\html\element;
 	use inputs\traits\container;
+	use inputs\traits\prefix;
 
 	/**
 		@brief		Version of the form object.

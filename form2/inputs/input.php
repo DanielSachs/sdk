@@ -15,6 +15,7 @@ class input
 	use traits\disabled;		// Most elements can be disabled, so instead of including it 500 times later, just include it once here.
 	use traits\label;			// Same reason as _disabled.
 	use traits\datalist;		// Same reason as _disabled.
+	use traits\prefix;
 	use traits\readonly;		// Same reason as _disabled.
 	use traits\validation;		// All subinputs will inherit the validation methods.
 
@@ -22,12 +23,19 @@ class input
 
 	public $description = '';
 
+	/**
+		@brief		Does this input have a description?
+		@var		$has_description
+	**/
 	public $has_description = true;
+
+	/**
+		@brief		Does this input have a label?
+		@var		$has_label
+	**/
 	public $has_label = true;
 
 	public $label;
-
-	public $prefix = array();
 
 	public $self_closing = true;
 
@@ -91,6 +99,10 @@ class input
 		// Close the tag
 		$r = $this->indent() . $r . "\n" . $this->indent() . $div->close_tag() . "\n";
 
+		// Inherit the prefixes from the main form object.
+		foreach( $this->form()->prefix as $prefix )
+			$this->prepend_prefix( $prefix );
+
 		// Replace the placeholders with their corresponding functions.
 		foreach( $placeholders as $type => $placeholder )
 		{
@@ -107,21 +119,6 @@ class input
 	**/
 	public function _construct()
 	{
-	}
-
-	/**
-		@brief		Append a / several prefixes.
-		@details	All arguments to this method are discovered and appended.
-		@return		this		Object chaining.
-		@see		prefix()
-		@see		prepend_prefix()
-		@since		20130524
-	**/
-	public function append_prefix( $prefix )
-	{
-		foreach( func_get_args() as $arg )
-			$this->prefix[] = $arg;
-		return $this;
 	}
 
 	/**
@@ -298,16 +295,6 @@ class input
 		return $this->get_attribute( 'id' );
 	}
 
-	/**
-		@brief		Does this input have any prefixes set?
-		@return		bool		True if the input has prefixes.
-		@since		20130718
-	**/
-	public function has_prefix()
-	{
-		return count( $this->prefix ) > 0;
-	}
-
 	public function indentation()
 	{
 		return $this->container->indentation() + 1;
@@ -347,37 +334,8 @@ class input
 		return $r;
 	}
 
-	/**
-		@brief		Set the prefix(es) for this input.
-		@details	Clears the prefixes before setting them.
-		@return		this		Object chaining.
-		@see		append_prefix()
-		@see		prepend_prefix()
-		@since		20130524
-	**/
-	public function prefix( $prefix )
-	{
-		$this->prefix = func_get_args();
-		return $this;
-	}
-
 	public function prepare_to_display()
 	{
-	}
-
-	/**
-		@brief		Prepend a / several prefixes.
-		@details	All arguments to this method are discovered and prepended to the beginning of the current prefixes.
-		@return		this		Object chaining.
-		@see		append_prefix()
-		@see		prefix()
-		@since		20130524
-	**/
-	public function prepend_prefix( $prefix )
-	{
-		foreach( func_get_args() as $arg )
-			array_unshift( $this->prefix, $arg );
-		return $this;
 	}
 
 	/**
