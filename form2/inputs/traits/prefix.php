@@ -28,6 +28,32 @@ trait prefix
 	}
 
 	/**
+		@brief		Return the prefix(es) of this object.
+		@return		array		An array of prefix strings.
+		@since		20130929
+	**/
+	public function get_prefix()
+	{
+		return $this->prefix;
+	}
+
+	/**
+		@brief		Return the prefix(es) of this object and the parent object.
+		@details	The order is the parent's prefixes first, then this object's.
+		@return		array		An array of prefix strings.
+		@since		20130929
+	**/
+	public function get_prefixes()
+	{
+		$r = [];
+		// Only the form has no container, but we have to check nonetheless.
+		if ( isset( $this->container ) )
+			$r += $this->container->get_prefixes();
+		$r += $this->get_prefix();
+		return $r;
+	}
+
+	/**
 		@brief		Does this input have any prefixes set?
 		@return		bool		True if the input has prefixes.
 		@since		20130718

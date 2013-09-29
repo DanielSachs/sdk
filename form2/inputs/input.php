@@ -99,10 +99,6 @@ class input
 		// Close the tag
 		$r = $this->indent() . $r . "\n" . $this->indent() . $div->close_tag() . "\n";
 
-		// Inherit the prefixes from the main form object.
-		foreach( $this->form()->prefix as $prefix )
-			$this->prepend_prefix( $prefix );
-
 		// Replace the placeholders with their corresponding functions.
 		foreach( $placeholders as $type => $placeholder )
 		{
@@ -141,7 +137,7 @@ class input
 	**/
 	public function assemble_input_string( $o )
 	{
-		$r = '123';
+		$r = '';
 		$r .= $o->indent . $o->label . "\n";
 		$r .= $o->indent . $o->input . "\n";
 		if ( isset( $o->description ) )
@@ -324,7 +320,7 @@ class input
 	public function make_name()
 	{
 		$name = $this->get_attribute( 'name' );
-		$names = array_merge( $this->prefix, array( $name ) );
+		$names = array_merge( $this->get_prefixes(), [ $name ] );
 
 		// The first prefix does NOT have brackets. The rest do. *sigh*
 		$r = array_shift( $names );
