@@ -13,6 +13,7 @@ namespace plainview;
 
 	This list only shows which classes were modified. For a detailed list, see the class' changelog.
 
+	- 20131001		form2
 	- 20130929		form2
 	- 20130925		form2
 	- 20130910		form2
@@ -59,7 +60,6 @@ namespace plainview;
 
 	@author			Edward Plainview		edward@plainview.se
 	@copyright		GPL v3
-	@version		20130910
 **/
 class base
 {
@@ -75,7 +75,7 @@ class base
 		@since		20130416
 		@var		$sdk_version
 	**/
-	protected $sdk_version = 20130925;
+	protected $sdk_version = 20131001;
 	/**
 		@brief		Constructor.
 		@since		20130425
