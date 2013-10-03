@@ -162,7 +162,7 @@ implements
 	{
 		if ( array_key_exists( $key, $this->items ) )
 			return $this->items[ $key ];
-		return value( $default );
+		return $default;
 	}
 
 	/**
@@ -400,6 +400,11 @@ implements
 	public function reverse()
 	{
 		return new static( array_reverse( $this->items ) );
+	}
+
+	public function set( $key, $value )
+	{
+		return $this->put( $key, $value );
 	}
 
 	/**
