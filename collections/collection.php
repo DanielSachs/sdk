@@ -3,6 +3,7 @@
 namespace plainview\collections;
 
 use ArrayIterator;
+use Closure;
 
 /**
 	@brief		Collection / array class.
@@ -56,6 +57,11 @@ implements
 	public function all()
 	{
 		return $this->items;
+	}
+
+	public function append( $item )
+	{
+		$this->items[] = $item;
 	}
 
 	/**
@@ -210,6 +216,19 @@ implements
 		if ( is_null( $glue ) ) return implode( $this->lists( $value ) );
 
 		return implode( $glue, $this->lists( $value ) );
+	}
+
+	/**
+		@brief		Is this object a collection?
+		@param		object		$object		Object to query.
+		@return		bool					True if the object is a collection.
+	**/
+	public static function is( $object )
+	{
+		return
+			is_a( $object, get_class( $object ) )
+			||
+			is_subclass_of( $object, get_class( $object ) );
 	}
 
 	/**
