@@ -16,6 +16,7 @@
 
 	@par	Changelog
 
+	- 20131004				Converted submenu_pages to collection.
 	- 20131004				cli_sdk_info(). Call using php PLUGIN.PHP --sdk_info
 	- 20130811				$plugin_version
 	- 20130810				time_to_string()
@@ -316,12 +317,12 @@ class base
 	public function add_submenu_page()
 	{
 		if ( ! isset( $this->submenu_pages ) )
-			$this->submenu_pages = array();
+			$this->submenu_pages = new \plainview\collections\collection;
 
 		$args = func_get_args();
-		$key = $args[ 2 ];
+		$key = $args[ 4 ];
 		$key = $this->strtolower( $key );
-		$this->submenu_pages[ $key ] = $args;
+		$this->submenu_pages->set( $key, $args );
 	}
 
 	/**
