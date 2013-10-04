@@ -1264,7 +1264,7 @@ class base
 	**/
 	public function do_cli()
 	{
-		$long_options = array_merge( array( 'pot' ), $this->long_options() );
+		$long_options = array_merge( [ 'pot', 'sdk_info' ], $this->long_options() );
 		$options = (object) getopt( '', $long_options );
 
 		foreach( $options as $option => $value )
