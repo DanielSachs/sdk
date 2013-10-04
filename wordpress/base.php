@@ -332,7 +332,10 @@ class base
 	**/
 	public function add_submenu_pages()
 	{
-		ksort( $this->submenu_pages );
+		$this->submenu_pages->sortBy( function( $item )
+		{
+			return $item[ 2 ];
+		} );
 		foreach( $this->submenu_pages as $submenu )
 			call_user_func_array( 'add_submenu_page', $submenu );
 	}
