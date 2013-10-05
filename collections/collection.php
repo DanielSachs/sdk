@@ -147,6 +147,15 @@ implements
 	}
 
 	/**
+		@brief		Removes all the items.
+		@since		20131005
+	**/
+	public function flush()
+	{
+		$this->items = [];
+	}
+
+	/**
 	 * Remove an item from the collection by key.
 	 *
 	 * @param  mixed  $key
